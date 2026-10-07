@@ -12,6 +12,8 @@ Native ARM64 AppKit launcher with a separate Foundation execution host in `Sourc
 
 Apple's local license is preserved in `Evidence/Apple-License.txt`. Sections 2A/2C restrict distribution to non-commercial purposes and require notices; redistribution of the complete framework or individual redist components is permitted subject to those terms. This local evaluation build is not a commercial release. Shader Converter is not needed at launch and is not bundled. No Microsoft system DLLs are copied.
 
+
+![CrossPlay My Games](Artwork/CrossPlay-My-Games.png)
 ## Build
 
 See `Evidence/wine11-configure.log`, `Evidence/wine11-build.log`, and `Evidence/source-sha256.txt` for source and build evidence. Wine was configured in a temporary path without spaces because GNU build tooling did not handle this workspace path reliably. `Scripts/package-runtime.py` copies our private installed build and official graphics bridge into the workspace. `Scripts/build-app.sh` compiles the launcher, packages runtime/licenses and signs/verifies it. Do not distribute the runtime without corresponding Wine source and applicable notices.
@@ -64,4 +66,3 @@ Detection remains a heuristic: dynamically loaded libraries, plugins, uninspecte
 
 CrossPlay provides a unified library for Windows games running on macOS through supported Wine/GPTK runtimes.
 
-![CrossPlay My Games](Artwork/CrossPlay-My-Games.png)
