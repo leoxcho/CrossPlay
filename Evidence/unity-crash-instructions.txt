@@ -1,0 +1,67 @@
+
+/Volumes/SSD/Neva/UnityPlayer.dll:	file format coff-x86-64
+
+Disassembly of section .text:
+
+0000000180813d90 <UnityMain>:
+18184c740: 10 00                       	adcb	%al, (%rax)
+18184c742: 00 48 89                    	addb	%cl, -0x77(%rax)
+18184c745: 74 24                       	je	0x18184c76b <UnityMain+0x10389db>
+18184c747: 28 89 7c 24 20 e8           	subb	%cl, -0x17dfdb84(%rcx)
+18184c74d: ab                          	stosl	%eax, %es:(%rdi)
+18184c74e: ab                          	stosl	%eax, %es:(%rdi)
+18184c74f: 00 00                       	addb	%al, (%rax)
+18184c751: 85 c0                       	testl	%eax, %eax
+18184c753: 75 0d                       	jne	0x18184c762 <UnityMain+0x10389d2>
+18184c755: e8 7a 59 fe ff              	callq	0x1818320d4 <UnityMain+0x101e344>
+18184c75a: c7 00 16 00 00 00           	movl	$0x16, (%rax)
+18184c760: eb 03                       	jmp	0x18184c765 <UnityMain+0x10389d5>
+18184c762: 8d 58 fe                    	leal	-0x2(%rax), %ebx
+18184c765: 80 7c 24 58 00              	cmpb	$0x0, 0x58(%rsp)
+18184c76a: 74 0c                       	je	0x18184c778 <UnityMain+0x10389e8>
+18184c76c: 48 8b 44 24 40              	movq	0x40(%rsp), %rax
+18184c771: 83 a0 a8 03 00 00 fd        	andl	$-0x3, 0x3a8(%rax)
+18184c778: 4c 8d 5c 24 60              	leaq	0x60(%rsp), %r11
+18184c77d: 8b c3                       	movl	%ebx, %eax
+18184c77f: 49 8b 5b 10                 	movq	0x10(%r11), %rbx
+18184c783: 49 8b 6b 18                 	movq	0x18(%r11), %rbp
+18184c787: 49 8b 73 20                 	movq	0x20(%r11), %rsi
+18184c78b: 49 8b e3                    	movq	%r11, %rsp
+18184c78e: 5f                          	popq	%rdi
+18184c78f: c3                          	retq
+18184c790: 40 53                       	pushq	%rbx
+18184c792: 48 83 ec 20                 	subq	$0x20, %rsp
+18184c796: 8b 1d 9c 9b 44 00           	movl	0x449b9c(%rip), %ebx    # 0x181c96338
+18184c79c: 85 db                       	testl	%ebx, %ebx
+18184c79e: 75 39                       	jne	0x18184c7d9 <UnityMain+0x1038a49>
+18184c7a0: 21 5c 24 30                 	andl	%ebx, 0x30(%rsp)
+18184c7a4: bb 01 00 00 00              	movl	$0x1, %ebx
+18184c7a9: 65 48 8b 04 25 60 00 00 00  	movq	%gs:0x60, %rax
+18184c7b2: 48 8b 48 20                 	movq	0x20(%rax), %rcx
+18184c7b6: 83 79 08 00                 	cmpl	$0x0, 0x8(%rcx)
+18184c7ba: 7c 15                       	jl	0x18184c7d1 <UnityMain+0x1038a41>
+18184c7bc: 48 8d 4c 24 30              	leaq	0x30(%rsp), %rcx
+18184c7c1: e8 7e f0 ff ff              	callq	0x18184b844 <UnityMain+0x1037ab4>
+18184c7c6: 39 5c 24 30                 	cmpl	%ebx, 0x30(%rsp)
+18184c7ca: 75 05                       	jne	0x18184c7d1 <UnityMain+0x1038a41>
+18184c7cc: bb 02 00 00 00              	movl	$0x2, %ebx
+18184c7d1: 8b cb                       	movl	%ebx, %ecx
+18184c7d3: 87 0d 5f 9b 44 00           	xchgl	%ecx, 0x449b5f(%rip)    # 0x181c96338
+18184c7d9: 8b c3                       	movl	%ebx, %eax
+18184c7db: 48 83 c4 20                 	addq	$0x20, %rsp
+18184c7df: 5b                          	popq	%rbx
+18184c7e0: c3                          	retq
+18184c7e1: cc                          	int3
+18184c7e2: cc                          	int3
+18184c7e3: cc                          	int3
+18184c7e4: 40 53                       	pushq	%rbx
+18184c7e6: 48 83 ec 20                 	subq	$0x20, %rsp
+18184c7ea: 33 db                       	xorl	%ebx, %ebx
+18184c7ec: 89 5c 24 30                 	movl	%ebx, 0x30(%rsp)
+18184c7f0: 65 48 8b 04 25 60 00 00 00  	movq	%gs:0x60, %rax
+18184c7f9: 48 8b 48 20                 	movq	0x20(%rax), %rcx
+18184c7fd: 39 59 08                    	cmpl	%ebx, 0x8(%rcx)
+18184c800: 7c 11                       	jl	0x18184c813 <UnityMain+0x1038a83>
+18184c802: 48 8d 4c 24 30              	leaq	0x30(%rsp), %rcx
+18184c807: e8 e0 ef ff ff              	callq	0x18184b7ec <UnityMain+0x1037a5c>
+18184c80c: 83 7c 24 30 01              	cmpl	$0x1, 0x30(%rsp)

@@ -1,0 +1,13 @@
+{
+  "total": 219,
+  "verifiedArtwork": 181,
+  "initials": 38,
+  "signaturesVerified": true,
+  "launcherPayloadsUnchanged": true,
+  "profilesUnchanged": true,
+  "bundleMetadataChanges": [
+    "CFBundleIconFile"
+  ],
+  "registeredWithLaunchServices": true,
+  "backup": "/Volumes/M2/Users/leoxcho/Documents/ChatGPT/CrossPlay/Build/Checkpoints/AGTK-Icons-20261006-003603"
+}

@@ -1,0 +1,22 @@
+{
+  "sources": [
+    {
+      "path": "/Volumes/M2/Users/leoxcho/Documents/ChatGPT/Akito Game Forging Toolkit/Scripts/capture-reference.py",
+      "sha256": "8296ab1d2069e58cbe71496c5c1a830d96c9c4f5c6c5d1fe171d57bb87cc0e39"
+    },
+    {
+      "path": "/Volumes/M2/Users/leoxcho/Documents/ChatGPT/Akito Game Forging Toolkit/Work/DynamicEvidence/83e33b5c-e4aa-434d-a77a-5dd03e26e710/execution.json",
+      "sha256": "fa9b7675cf00319fbdd69f03fcf1168bdb3517d6c11a3be3165b2a85d9e255df"
+    },
+    {
+      "path": "/Volumes/M2/Users/leoxcho/Documents/ChatGPT/Akito Game Forging Toolkit/Work/DynamicEvidence/83e33b5c-e4aa-434d-a77a-5dd03e26e710/player.log",
+      "sha256": "bad3a4409829ed7bbe473b930ba985f6cdb284183b101d5287f98636435cfcde"
+    }
+  ],
+  "applied": [
+    "Per-game working directory and isolated WINEPREFIX already present",
+    "Add thread IDs and structured exception tracing to default diagnostics",
+    "Permit explicit WINEDEBUG override for bounded selective relay captures"
+  ],
+  "boundary": "External Wine reference execution is separate from native AGFT port generation. Referenced runtime was not copied or executed by this project. Startup logs establish Direct3D 11 and plugin initialization, not independently verified gameplay."
+}

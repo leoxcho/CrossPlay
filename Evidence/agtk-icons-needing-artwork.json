@@ -1,0 +1,709 @@
+[
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Control.app",
+    "name": "Control",
+    "executable": "/Volumes/SSD/EPIC/Control/Control_DX11.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Control",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 3669870,
+        "name": "CONTROL Resonant"
+      },
+      {
+        "id": 870780,
+        "name": "CONTROL Ultimate Edition"
+      },
+      {
+        "id": 4165870,
+        "name": "Steam Controller"
+      },
+      {
+        "id": 690040,
+        "name": "SUPERHOT: MIND CONTROL DELETE"
+      },
+      {
+        "id": 4403940,
+        "name": "CONTROL Resonant Digital Deluxe Upgrade"
+      },
+      {
+        "id": 1759150,
+        "name": "Space Control"
+      },
+      {
+        "id": 271260,
+        "name": "Star Control\u00ae: Origins"
+      },
+      {
+        "id": 4515660,
+        "name": "Control, I'm Not Coming Back"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/DRAGON QUEST XI S Echoes of an Elusive Age DE.app",
+    "name": "DRAGON QUEST XI S Echoes of an Elusive Age DE",
+    "executable": "/Volumes/SSD/DRAGON QUEST XI S Echoes of an Elusive Age DE/Game/Binaries/Win64/DRAGON QUEST XI S.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "DRAGON QUEST XI S: Echoes of an Elusive Age \u2013 Definitive Edition",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/DeathStranding.app",
+    "name": "DeathStranding",
+    "executable": "/Volumes/PC/DeathStranding/DeathStranding.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "DEATH STRANDING",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 3280350,
+        "name": "DEATH STRANDING 2: ON THE BEACH"
+      },
+      {
+        "id": 1850570,
+        "name": "DEATH STRANDING DIRECTOR'S CUT"
+      },
+      {
+        "id": 3669170,
+        "name": "DEATH STRANDING 2: ON THE BEACH - Upgrade to Digital Deluxe Edition"
+      },
+      {
+        "id": 1946740,
+        "name": "DEATH STRANDING Digital Artbook"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Destiny Sunrise.app",
+    "name": "Destiny Sunrise",
+    "executable": "/Volumes/PC/Destiny Sunrise/destiny2.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Destiny Sunrise",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Deus Ex HRDC.app",
+    "name": "Deus Ex HRDC",
+    "executable": "/Volumes/HDD2/PC LIBRARY/GOG/Deus Ex HRDC/DXHRDC.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Deus Ex: Human Revolution - Director's Cut",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Diablo II Resurrected.app",
+    "name": "Diablo II Resurrected",
+    "executable": "/Volumes/SSD/Diablo II Resurrected/D2R.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Diablo II Resurrected",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 2536520,
+        "name": "Diablo II: Resurrected \u2013 Infernal Edition"
+      },
+      {
+        "id": 4523200,
+        "name": "Diablo II: Resurrected - Original Soundtrack"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Disney Illusion Island SMAF.app",
+    "name": "Disney Illusion Island SMAF",
+    "executable": "/Volumes/SSD/Disney Illusion Island SMAF/Disney Illusion Island.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Disney Illusion Island Starring Mickey & Friends",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 2054660,
+        "name": "Disney Illusion Island Starring Mickey and Friends"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/ENDLESS Space - Definitive Edition.app",
+    "name": "ENDLESS Space - Definitive Edition",
+    "executable": "/Volumes/HDD2/PC LIBRARY/AMAZON GAMES/ENDLESS Space - Definitive Edition/Endless space.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "ENDLESS Space - Definitive Edition",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Faraway Director's Cut.app",
+    "name": "Faraway Director's Cut",
+    "executable": "/Volumes/HDD2/PC LIBRARY/AMAZON GAMES/Faraway Director's Cut/Faraway.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Faraway: Director's Cut",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Gal Gun Series.app",
+    "name": "Gal Gun Series",
+    "executable": "/Volumes/SSD/Gal Gun Series/GalGun 2/GalGun2/Binaries/Win64/GalGun2-Win64-Shipping.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Gal Gun Series",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Godfall.app",
+    "name": "Godfall",
+    "executable": "/Volumes/SSD/Godfall/Aperion.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Godfall",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 928960,
+        "name": "Godfall Ultimate Edition"
+      },
+      {
+        "id": 469720,
+        "name": "Monsters' Den: Godfall"
+      },
+      {
+        "id": 4810250,
+        "name": "Godfall: Embers"
+      },
+      {
+        "id": 1091060,
+        "name": "Monsters' Den: Godfall - Protectorate Operations"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Hatsune Miku Logic Paint S.app",
+    "name": "Hatsune Miku Logic Paint S",
+    "executable": "/Volumes/SSD/Hatsune Miku Logic Paint S/Hatsune Miku Logic Paint S.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Hatsune Miku Logic Paint S",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 3446190,
+        "name": "Hatsune Miku Logic Paint S+"
+      },
+      {
+        "id": 2089350,
+        "name": "Hatsune Miku Logic Paint S"
+      },
+      {
+        "id": 4039650,
+        "name": "Hatsune Miku Logic Paint S+ SNOW MIKU Sky Town"
+      },
+      {
+        "id": 4459270,
+        "name": "Hatsune Miku Logic Paint S+ Sakura Miku"
+      },
+      {
+        "id": 4740380,
+        "name": "Hatsune Miku Logic Paint S+ Tropical Vacation"
+      },
+      {
+        "id": 5057690,
+        "name": "Hatsune Miku Logic Paint S+ Dream On Stage"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/JUMP FORCE.app",
+    "name": "JUMP FORCE",
+    "executable": "/Volumes/SSD/JUMP FORCE/JUMP_FORCE.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "JUMP FORCE",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/KINGDOM HEARTS III.app",
+    "name": "KINGDOM HEARTS III",
+    "executable": "/Volumes/SSD/KINGDOM HEARTS III/KINGDOM HEARTS III/Binaries/Win64/KINGDOM HEARTS III.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "KINGDOM HEARTS III + Re Mind (DLC)",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/KINGDOM HEARTS Melody of Memory.app",
+    "name": "KINGDOM HEARTS Melody of Memory",
+    "executable": "/Volumes/SSD/KINGDOM HEARTS Melody of Memory/KINGDOM HEARTS Melody of Memory.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "KINGDOM HEARTS Melody of Memory",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/LEGO Harry Potter Years 1-4.app",
+    "name": "LEGO Harry Potter Years 1-4",
+    "executable": "/Volumes/SSD/LEGO Harry Potter Collection/Years 1-4/harry1.exe",
+    "localSteamIDs": [
+      2950340
+    ],
+    "hasIcon": false,
+    "profile": true,
+    "query": "LEGO Harry Potter Years 1-4",
+    "status": "initials",
+    "reason": "Local Steam ID disagrees with title match",
+    "candidates": [
+      {
+        "id": 21130,
+        "name": "LEGO\u00ae Harry Potter: Years 1-4"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/LEGO Harry Potter Years 5-7.app",
+    "name": "LEGO Harry Potter Years 5-7",
+    "executable": "/Volumes/SSD/LEGO Harry Potter Collection/Years 5-7/harry2.exe",
+    "localSteamIDs": [
+      2950340
+    ],
+    "hasIcon": false,
+    "profile": true,
+    "query": "LEGO Harry Potter Years 5-7",
+    "status": "initials",
+    "reason": "Local Steam ID disagrees with title match",
+    "candidates": [
+      {
+        "id": 204120,
+        "name": "LEGO\u00ae Harry Potter: Years 5-7"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/LEGO Star Wars - The Clone Wars.app",
+    "name": "LEGO Star Wars - The Clone Wars",
+    "executable": "/Volumes/HDD2/PC LIBRARY/GOG/LEGO Star Wars - The Clone Wars/LEGOCloneWars.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "LEGO Star Wars III - The Clone Wars",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Lego2KDrive.app",
+    "name": "Lego2KDrive",
+    "executable": "/Volumes/HDD2/PC LIBRARY/EPIC GAMES/Lego2KDrive/LEGO2KDrive.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "LEGO 2K Drive",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Mafia II.app",
+    "name": "Mafia II",
+    "executable": "/Volumes/HDD2/PC LIBRARY/GOG/Mafia II/pc/mafia2.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Mafia II",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 1030830,
+        "name": "Mafia II: Definitive Edition"
+      },
+      {
+        "id": 50130,
+        "name": "Mafia II (Classic)"
+      },
+      {
+        "id": 342913,
+        "name": "Mafia II: Definitive Edition"
+      },
+      {
+        "id": 50280,
+        "name": "Mafia II Demo"
+      },
+      {
+        "id": 67330,
+        "name": "Mafia II DLC: Greaser Pack"
+      },
+      {
+        "id": 67340,
+        "name": "Mafia II DLC: Renegade Pack"
+      },
+      {
+        "id": 67360,
+        "name": "Mafia II DLC: War Hero Pack"
+      },
+      {
+        "id": 360430,
+        "name": "Mafia III: Definitive Edition"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Marvels Spider-Man Remastered.app",
+    "name": "Marvels Spider-Man Remastered",
+    "executable": "/Volumes/PC/Marvels Spider-Man Remastered/Spider-Man.exe",
+    "localSteamIDs": [
+      1295630
+    ],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Marvel\u2019s Spider-Man Remastered",
+    "status": "initials",
+    "reason": "Local Steam ID disagrees with title match",
+    "candidates": [
+      {
+        "id": 1817070,
+        "name": "Marvel\u2019s Spider-Man Remastered"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Mirror's Edge - Catalyst.app",
+    "name": "Mirror's Edge - Catalyst",
+    "executable": "/Volumes/SSD/Mirror's Edge - Catalyst/MirrorsEdgeCatalyst.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Mirror's Edge - Catalyst",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Monument Valley 2 Panoramic Edition.app",
+    "name": "Monument Valley 2 Panoramic Edition",
+    "executable": "/Volumes/SSD/Monument Valley 2 Panoramic Edition/Monument Valley 2.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Monument Valley 2 Panoramic Edition",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Monument Valley Panoramic Edition.app",
+    "name": "Monument Valley Panoramic Edition",
+    "executable": "/Volumes/SSD/Monument Valley Panoramic Edition /Monument Valley.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Monument Valley Panoramic Edition",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/PREY.app",
+    "name": "PREY",
+    "executable": "/Volumes/HDD2/PC LIBRARY/EPIC GAMES/PREY/Binaries/Danielle/x64-Epic/Release/Prey.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "PREY",
+    "status": "initials",
+    "steamAppID": 480490,
+    "matchedTitle": "Prey",
+    "source": "https://store.steampowered.com/app/480490/",
+    "reason": "Remake ambiguity without local identity confirmation"
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Reflections of Life Dark Architect - CE.app",
+    "name": "Reflections of Life Dark Architect - CE",
+    "executable": "/Volumes/HDD2/PC LIBRARY/AMAZON GAMES/Reflections of Life Dark Architect - CE/RoL_DarkArchitect_CE.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Reflections of Life Dark Architect - CE",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Resident Evil 4.app",
+    "name": "Resident Evil 4",
+    "executable": "/Volumes/SSD/Resident Evil 4/re4.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Resident Evil 4",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 2050650,
+        "name": "Resident Evil 4"
+      },
+      {
+        "id": 254700,
+        "name": "Resident Evil 4 (2005)"
+      },
+      {
+        "id": 2109300,
+        "name": "Resident Evil 4 - Separate Ways"
+      },
+      {
+        "id": 2109315,
+        "name": "Resident Evil 4 - The Mercenaries"
+      },
+      {
+        "id": 2593600,
+        "name": "Resident Evil 4 Original Soundtrack"
+      },
+      {
+        "id": 2231770,
+        "name": "Resident Evil 4 Chainsaw Demo"
+      },
+      {
+        "id": 2109301,
+        "name": "Resident Evil 4 Treasure Map: Expansion"
+      },
+      {
+        "id": 2109313,
+        "name": "Resident Evil 4 Charm: 'Handgun Ammo'"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Senran Kagura Bon Appetit.app",
+    "name": "Senran Kagura Bon Appetit",
+    "executable": "/Volumes/SSD/Senran Kagura Bon Appetit/SKBonAppetit.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "SENRAN KAGURA Bon App\u00e9tit! - Full Course",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Spider-Man Shattered Dimensions.app",
+    "name": "Spider-Man Shattered Dimensions",
+    "executable": "/Volumes/SSD/Spider-Man Shattered Dimensions/Game.exe",
+    "localSteamIDs": [
+      231990
+    ],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Spider-Man Shattered Dimensions",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Spyro Demo.app",
+    "name": "Spyro Demo",
+    "executable": "/Volumes/HDD2/PC LIBRARY/Spyro Demo/Spyro_Bunnited.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Spyro Demo",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 2015870,
+        "name": "Spy Robot: Gateways To Humanity Demo"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Star Wars - Battlefront 2.app",
+    "name": "Star Wars - Battlefront 2",
+    "executable": "/Volumes/HDD2/PC LIBRARY/GOG/Star Wars - Battlefront 2/language_setup.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Star Wars - Battlefront 2",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/TRANSFORMERS Devastation.app",
+    "name": "TRANSFORMERS Devastation",
+    "executable": "/Volumes/SSD/TRANSFORMERS Devastation/TransformersDevastation.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "TRANSFORMERS Devastation",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/TTAoDKOneShotAdventure.app",
+    "name": "TTAoDKOneShotAdventure",
+    "executable": "/Volumes/HDD2/PC LIBRARY/EPIC GAMES/TTAoDKOneShotAdventure/Binaries/Win32/TinyTina.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "TTAoDKOneShotAdventure",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/The Last Remnant.app",
+    "name": "The Last Remnant",
+    "executable": "/Volumes/SSD/The Last Remnant/Binaries/TLR.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "The Last Remnant",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": []
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Thief.app",
+    "name": "Thief",
+    "executable": "/Volumes/HDD2/PC LIBRARY/EPIC GAMES/ThiefvWwV2/Binaries/Win64/Shipping-ThiefGame.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Thief",
+    "status": "initials",
+    "steamAppID": 239160,
+    "matchedTitle": "Thief",
+    "source": "https://store.steampowered.com/app/239160/",
+    "reason": "Remake ambiguity without local identity confirmation"
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Tomb Raider I-III Remastered.app",
+    "name": "Tomb Raider I-III Remastered",
+    "executable": "/Volumes/HDD2/PC LIBRARY/GOG/Tomb Raider I-III Remastered/tomb123.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Tomb Raider I-III Remastered",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 2478970,
+        "name": "Tomb Raider I-III Remastered Starring Lara Croft"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Tomb Raider.app",
+    "name": "Tomb Raider",
+    "executable": "/Volumes/HDD2/PC LIBRARY/GOG/Tomb Raider/TombRaider.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Tomb Raider",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 391220,
+        "name": "Rise of the Tomb Raider\u2122"
+      },
+      {
+        "id": 750920,
+        "name": "Shadow of the Tomb Raider: Definitive Edition"
+      },
+      {
+        "id": 2525380,
+        "name": "Tomb Raider IV-VI Remastered"
+      },
+      {
+        "id": 203160,
+        "name": "Tomb Raider Game of the Year"
+      },
+      {
+        "id": 3558670,
+        "name": "Tomb Raider: Legacy of Atlantis"
+      },
+      {
+        "id": 2478970,
+        "name": "Tomb Raider I-III Remastered Starring Lara Croft"
+      },
+      {
+        "id": 8000,
+        "name": "Tomb Raider: Anniversary"
+      },
+      {
+        "id": 7000,
+        "name": "Tomb Raider: Legend"
+      }
+    ]
+  },
+  {
+    "app": "/Volumes/M2/Users/leoxcho/Applications/AGTK Games/Windbound.app",
+    "name": "Windbound",
+    "executable": "/Volumes/HDD2/PC LIBRARY/EPIC GAMES/Windbound/Windbound.exe",
+    "localSteamIDs": [],
+    "hasIcon": false,
+    "profile": true,
+    "query": "Windbound",
+    "status": "initials",
+    "reason": "No unique confirmed title/edition match",
+    "candidates": [
+      {
+        "id": 1162130,
+        "name": "Windbound"
+      },
+      {
+        "id": 4140440,
+        "name": "Windbound"
+      }
+    ]
+  }
+]

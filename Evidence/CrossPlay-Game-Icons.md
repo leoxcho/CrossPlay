@@ -1,0 +1,15 @@
+# Game icon search and wrapper repair
+
+Implemented in the existing CrossPlay tree, with pre-change Sources/Scripts/README/Git status preserved under Build/Checkpoints/20261006-IconSearch.
+
+Native controls: Find Game Icon on the selected-game panel; Search Game Icon, Import Image and Update Existing App Icon under Game Profiles. Search uses Steam's public store search endpoint. Results show title, image and app ID. An explicit selection is required; there is no fuzzy or first-result automatic assignment. The selected app-details response must contain the same app ID and title before its artwork is downloaded. Search sends the typed title only. No API key is required. Users can edit the query for generic EXE names and choose the correct edition, or import local PNG/JPEG/TIFF/ICNS artwork.
+
+Artwork is managed under CrossPlay/Artwork in Application Support and attached to the exact executable path in Library.json. Old saved libraries without artwork fields remain decodable. Existing artwork is changed only on explicit successful selection/import. Library cards and the hero panel display the selected image.
+
+Native wrapping and CLI wrapping now embed GameIcon.icns and set CFBundleIconFile before ad-hoc signing. ICNS includes 16/32/64/128/256/512/1024 PNG representations. Images are aspect-fitted to preserve the complete artwork. Games with no selected artwork receive neutral game-initials icons, never guessed artwork from another title. Native wrappers include GameArtwork.json provenance.
+
+Existing wrapper updates require both a CrossPlay wrapper identifier/bootstrap and exact canonical executable-path match. Wrong-game attempts are rejected before modification. Updated apps are staged, signed and signature-verified before replacing the destination; original apps are preserved as sibling before-icon UUID backups. Existing saved launch profiles remain byte-identical. The host bootstrap is refreshed to the renamed CrossPlay project location.
+
+Fixed Build/Test/Journey.app, Journey-CrossPlay.app and Journey-Final.app with verified Journey artwork from Steam app 638230. Search results also returned unrelated Journey-named titles; they were not used. Other app formats and unrelated game wrappers were untouched.
+
+Evidence: crossplay-icon-validation.log confirms live search/download, app-ID check, wrong-game rejection, ICNS decode, signed update, profile preservation, initials fallback and old-library decoding. crossplay-icon-packaging-checks.txt validates all seven icon sizes, wrapper plist and exact saved executable for the three repaired wrappers plus both CLI fixtures. crossplay-existing-wrapper-icons.log records updates/signature checks. macOS NSWorkspace icon lookup exported Journey-Finder-Icon.png and Fallback-Finder-Icon.png under Build/IconValidation; both were visually inspected and show the expected artwork/initials. Final CrossPlay build and strict/deep signature verification passed. ExecutionHost.swift is byte-identical to the checkpoint. No game launch or gameplay testing was performed.

@@ -1,0 +1,142 @@
+import Foundation
+import CryptoKit
+
+struct GameInfo {
+    let url: URL
+    let architecture: String
+    let graphics: String
+    let imports: [String]
+    static func inspect(_ url: URL) throws -> GameInfo {
+        let data = try Data(contentsOf: url, options: .mappedIfSafe)
+        func u16(_ n: Int) -> UInt16 { UInt16(data[n]) | UInt16(data[n+1]) << 8 }
+        func u32(_ n: Int) -> UInt32 { UInt32(u16(n)) | UInt32(u16(n+2)) << 16 }
+        guard data.count > 64, data[0] == 77, data[1] == 90 else { throw HostError.message("Not a Windows PE executable") }
+        let pe = Int(u32(60))
+        guard pe >= 64, pe + 24 < data.count, Array(data[pe..<pe+4]) == [80,69,0,0] else { throw HostError.message("Invalid PE header") }
+        let machine = u16(pe+4)
+        let arch = machine == 0x8664 ? "x86-64 Windows" : machine == 0x14c ? "x86 Windows (unsupported)" : machine == 0xaa64 ? "ARM64 Windows (unsupported)" : "Unknown (unsupported)"
+        // PE imports are ASCII; also inspect adjacent UnityPlayer for engine requirements.
+        var payload = data
+        let unity = url.deletingLastPathComponent().appendingPathComponent("UnityPlayer.dll")
+        if FileManager.default.fileExists(atPath: unity.path), let d = try? Data(contentsOf: unity, options: .mappedIfSafe) { payload.append(d) }
+        let text = String(decoding: payload, as: UTF8.self).lowercased()
+        let names = ["d3d11.dll", "dxgi.dll", "d3d12.dll", "vulkan-1.dll", "opengl32.dll", "mono-2.0-bdwgc.dll", "vcruntime140.dll", "msvcp140.dll"].filter { text.contains($0) }
+        let graphics = names.filter { $0.contains("d3d") || $0.contains("dxgi") || $0.contains("vulkan") || $0.contains("opengl") }.joined(separator: ", ")
+        return GameInfo(url: url, architecture: arch, graphics: graphics.isEmpty ? "Undetermined" : "Likely: " + graphics, imports: names)
+    }
+    var key: String { SHA256.hash(data: Data(url.standardizedFileURL.path.utf8)).prefix(12).map { String(format:"%02x", $0) }.joined() }
+}
+enum HostError: LocalizedError {
+    case message(String)
+    var errorDescription: String? { if case let .message(s) = self { return s }; return nil }
+}
+final class ExecutionHost {
+    let root: URL
+    let storage: URL
+    var process: Process?
+    private var activePrefix: URL?
+    var log: (String) -> Void = { _ in }
+    var finished: (Int32) -> Void = { _ in }
+    init(root: URL, storage: URL) { self.root = root; self.storage = storage }
+    func prefix(for game: GameInfo) -> URL {
+        let identity = (try? String(contentsOf: root.appendingPathComponent("RuntimeIdentity.txt"), encoding: .utf8))?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let suffix = identity.isEmpty ? "" : "-" + identity.filter { $0.isLetter || $0.isNumber || $0 == "-" }
+        return storage.appendingPathComponent("Prefixes/" + game.key + suffix)
+    }
+    func launch(_ game: GameInfo, arguments: [String], variables: [String:String]) throws {
+        guard game.architecture == "x86-64 Windows" else { throw HostError.message("This runtime supports x86-64 Windows executables only") }
+        guard process == nil else { throw HostError.message("A game is already running") }
+        let wine = root.appendingPathComponent("bin/wine")
+        guard FileManager.default.isExecutableFile(atPath: wine.path) else { throw HostError.message("Private upstream Wine runtime is missing: \(wine.path)") }
+        let prefix = prefix(for: game)
+        activePrefix = prefix
+        try FileManager.default.createDirectory(at: prefix, withIntermediateDirectories: true)
+        let logs = storage.appendingPathComponent("Logs")
+        try FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)
+        let logURL = logs.appendingPathComponent(game.key + "-" + String(Int(Date().timeIntervalSince1970)) + ".log")
+        FileManager.default.createFile(atPath: logURL.path, contents: nil)
+        let file = try FileHandle(forWritingTo: logURL)
+        // Bootstrap on a worker so prefix creation does not block the native UI.
+        let p = Process(); let pipe = Pipe()
+        p.executableURL = wine
+        p.currentDirectoryURL = game.url.deletingLastPathComponent()
+        p.arguments = [game.url.path] + arguments
+        var env = ProcessInfo.processInfo.environment
+        for name in Array(env.keys) where name.hasPrefix("WINE") || name.hasPrefix("DYLD_") { env.removeValue(forKey: name) }
+        env.merge(variables) { _, new in new }
+        env["WINEPREFIX"] = prefix.path
+        env["WINELOADER"] = wine.path
+        env["WINESERVER"] = root.appendingPathComponent("bin/wineserver").path
+        env["WINEDEBUG"] = variables["WINEDEBUG"] ?? "+timestamp,+pid,+tid,+loaddll,+seh"
+        env["WINEDLLOVERRIDES"] = variables["WINEDLLOVERRIDES"] ?? "d3d11,dxgi,d3d12,d3d10=n,b"
+        env["WINEDLLPATH"] = root.appendingPathComponent("lib/wine").path
+        env["DYLD_FALLBACK_LIBRARY_PATH"] = root.appendingPathComponent("lib/external").path + ":" + root.appendingPathComponent("lib").path + ":/usr/lib"
+        env["ROSETTA_ADVERTISE_AVX"] = "1"
+        p.environment = env; p.standardOutput = pipe; p.standardError = pipe
+        log("Working directory: \(p.currentDirectoryURL!.path)\nPrefix: \(prefix.path)\nLog: \(logURL.path)\nLaunching with official GPTK 4 graphics bridge. Process start does not establish rendered gameplay.\n")
+        pipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
+            let d = handle.availableData
+            guard !d.isEmpty else { handle.readabilityHandler = nil; try? file.close(); return }
+            try? file.write(contentsOf: d)
+            let message = String(decoding: d, as: UTF8.self)
+            DispatchQueue.main.async { self?.log(message) }
+        }
+        p.terminationHandler = { [weak self] p in
+            // Descendants may retain stdout. Report the root exit immediately;
+            // the reader drains diagnostics until EOF without blocking this callback.
+            DispatchQueue.main.async {
+                self?.log("\nGame process exited with status \(p.terminationStatus).\n")
+                self?.process = nil; self?.finished(p.terminationStatus)
+            }
+        }
+        if !FileManager.default.fileExists(atPath: prefix.appendingPathComponent("system.reg").path) {
+            let boot = Process()
+            boot.executableURL = wine
+            boot.arguments = ["wineboot", "-u"]
+            var bootEnv = env; bootEnv["WINEDLLOVERRIDES"] = "mscoree,mshtml="
+            boot.environment = bootEnv
+            boot.standardOutput = file; boot.standardError = file
+            try boot.run(); process = boot
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                boot.waitUntilExit()
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    self.process = nil
+                    if let bootLog = try? String(contentsOf: logURL, encoding: .utf8) { self.log(bootLog) }
+                    guard boot.terminationStatus == 0 else {
+                        self.log("Prefix initialization failed: \(boot.terminationStatus)\n")
+                        pipe.fileHandleForReading.readabilityHandler = nil
+                        try? file.close(); self.finished(boot.terminationStatus); return
+                    }
+                    do { try self.installGraphics(prefix: prefix); try p.run(); self.process = p }
+                    catch { self.log(error.localizedDescription + "\n"); self.finished(-1) }
+                }
+            }
+        } else {
+            try installGraphics(prefix: prefix)
+            try p.run(); process = p
+        }
+    }
+    func stop() throws {
+        guard let prefix = activePrefix else { return }
+        let stop = Process()
+        stop.executableURL = root.appendingPathComponent("bin/wineserver")
+        stop.arguments = ["-k"]
+        var env = ProcessInfo.processInfo.environment
+        env["WINEPREFIX"] = prefix.path
+        stop.environment = env
+        try stop.run()
+        log("Stopping processes in this game's isolated environment.\n")
+    }
+    private func installGraphics(prefix: URL) throws {
+        let source = root.appendingPathComponent("AppleGraphics")
+        let target = prefix.appendingPathComponent("drive_c/windows/system32")
+        for name in ["d3d10.dll", "d3d11.dll", "dxgi.dll", "d3d12.dll"] {
+            let src = source.appendingPathComponent(name), dst = target.appendingPathComponent(name)
+            guard FileManager.default.fileExists(atPath: src.path) else { throw HostError.message("Official GPTK 4 bridge missing: " + src.path) }
+            if FileManager.default.fileExists(atPath: dst.path) { try FileManager.default.removeItem(at: dst) }
+            try FileManager.default.copyItem(at: src, to: dst)
+        }
+    }
+
+}

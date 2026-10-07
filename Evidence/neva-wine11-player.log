@@ -1,0 +1,73 @@
+Mono path[0] = 'Z:/Volumes/SSD/Neva/Neva_Data/Managed'
+Mono config path = 'Z:/Volumes/SSD/Neva/MonoBleedingEdge/etc'
+[PhysX] Initialized MultithreadedTaskDispatcher with 10 workers.
+Initialize engine version: 2022.3.31f1 (4ede2d13e8b4)
+[Subsystems] Discovering subsystems at path Z:/Volumes/SSD/Neva/Neva_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1; jobified=0
+Crash!!!
+
+=================================================================
+	Native Crash Reporting
+=================================================================
+Got a UNKNOWN while executing native code. This usually indicates
+a fatal error in the mono runtime or one of the native libraries 
+used by your application.
+=================================================================
+
+=================================================================
+	Managed Stacktrace:
+=================================================================
+=================================================================
+SymInit: Symbol-SearchPath: '.;Z:\Volumes\SSD\Neva;Z:/Volumes/SSD/Neva/Neva_Data/Plugins\x86_64;Z:/Volumes/SSD/Neva/Neva_Data/Plugins;Z:\Volumes\SSD\Neva;C:\windows;C:\windows\system32;', symOptions: 534, UserName: 'leoxcho'
+OS-Version: 10.0.0
+Z:\Volumes\SSD\Neva\Neva.exe:Neva.exe (0000000140000000), size: 688128 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2022.3.31.56877
+C:\windows\system32\ntdll.dll:ntdll.dll (00006FFFFFD20000), size: 2899968 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.1.7601.24059
+C:\windows\system32\kernel32.dll:kernel32.dll (00006FFFFFBB0000), size: 1392640 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19045.5796
+C:\windows\system32\kernelbase.dll:kernelbase.dll (00006FFFFF6E0000), size: 4968448 (result: 0), SymType: '-deferred-', PDB: ''
+Z:\Volumes\SSD\Neva\UnityPlayer.dll:UnityPlayer.dll (00006FFFFA570000), size: 31903744 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2022.3.31.56877
+C:\windows\system32\USER32.dll:USER32.dll (00006FFFFE190000), size: 4845568 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2180
+C:\windows\system32\gdi32.dll:gdi32.dll (00006FFFFDFA0000), size: 1929216 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.0.0
+C:\windows\system32\advapi32.dll:advapi32.dll (00006FFFFF600000), size: 798720 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.10240.16384
+C:\windows\system32\sechost.dll:sechost.dll (00006FFFFF590000), size: 376832 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\ucrtbase.dll:ucrtbase.dll (00006FFFFF260000), size: 3276800 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.14393.2247
+C:\windows\system32\msvcrt.dll:msvcrt.dll (00006FFFFEFB0000), size: 2691072 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 7.0.2600.2180
+C:\windows\system32\win32u.dll:win32u.dll (00006FFFFDF50000), size: 262144 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\VERSION.dll:VERSION.dll (00006FFFFA540000), size: 77824 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2180
+C:\windows\system32\ole32.dll:ole32.dll (00006FFFFE640000), size: 2818048 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.0.0
+C:\windows\system32\combase.dll:combase.dll (00006FFFFDE10000), size: 1191936 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\rpcrt4.dll:rpcrt4.dll (00006FFFFDC30000), size: 1859584 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2180
+C:\windows\system32\cryptbase.dll:cryptbase.dll (00006FFFFDC00000), size: 110592 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\coml2.dll:coml2.dll (00006FFFFDBA0000), size: 303104 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\SHLWAPI.dll:SHLWAPI.dll (00006FFFFD7A0000), size: 843776 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.0.2800.1692
+C:\windows\system32\shcore.dll:shcore.dll (00006FFFFD750000), size: 217088 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\SETUPAPI.dll:SETUPAPI.dll (00006FFFFC9A0000), size: 1499136 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\SHELL32.dll:SHELL32.dll (00006FFFFCB50000), size: 12488704 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.0.2900.6242
+C:\windows\system32\OPENGL32.dll:OPENGL32.dll (000000007BC60000), size: 3706880 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2082
+C:\windows\system32\WINMM.dll:WINMM.dll (00006FFFFA3E0000), size: 1347584 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\msacm32.dll:msacm32.dll (00006FFFFA370000), size: 360448 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\OLEAUT32.dll:OLEAUT32.dll (00006FFFFD910000), size: 2592768 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19043.1466
+C:\windows\system32\IMM32.dll:IMM32.dll (00006FFFFC920000), size: 397312 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2180
+C:\windows\system32\WINHTTP.dll:WINHTTP.dll (00006FFFFA280000), size: 905216 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2180
+C:\windows\system32\jsproxy.dll:jsproxy.dll (00006FFFFA220000), size: 299008 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\ws2_32.dll:ws2_32.dll (00006FFFFEF20000), size: 520192 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.5512
+C:\windows\system32\bcrypt.dll:bcrypt.dll (00006FFFFA1B0000), size: 335872 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.0.6000.16386
+C:\windows\system32\HID.DLL:HID.DLL (00006FFFFA170000), size: 172032 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.0.0
+C:\windows\system32\CRYPT32.dll:CRYPT32.dll (00006FFFF9EB0000), size: 2818048 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.131.2600.1243
+C:\windows\system32\dwmapi.dll:dwmapi.dll (00006FFFF9E80000), size: 114688 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.0.6000.16386
+c:\windows\system32\winemac.drv:winemac.drv (00006FFFFC7E0000), size: 110592 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.0.0
+C:\windows\system32\uxtheme.dll:uxtheme.dll (00006FFFFC4C0000), size: 548864 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.0.0
+Z:\Volumes\SSD\Neva\MonoBleedingEdge\EmbedRuntime\mono-2.0-bdwgc.dll:mono-2.0-bdwgc.dll (00006FFFF8EA0000), size: 10825728 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\iphlpapi.dll:iphlpapi.dll (00006FFFFC660000), size: 536576 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.1.2600.2180
+C:\windows\system32\dnsapi.dll:dnsapi.dll (00006FFFFC610000), size: 233472 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 5.2.3790.4318
+C:\windows\system32\nsi.dll:nsi.dll (00006FFFFC5E0000), size: 110592 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\d3d11.dll:d3d11.dll (00006FFFFEEE0000), size: 167936 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\dxgi.dll:dxgi.dll (00006FFFF7E60000), size: 16928768 (result: 0), SymType: '-deferred-', PDB: ''
+C:\windows\system32\dbghelp.dll:dbghelp.dll (00006FFFF9B00000), size: 2777088 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.1.7601.17514
+
+========== OUTPUTTING STACK TRACE ==================
+
+
+========== END OF STACKTRACE ===========
+
+A crash has been intercepted by the crash handler. For call stack and other details, see the latest crash report generated in:
+ * C:/users/leoxcho/AppData/Local/Temp/nomada studio/Neva/Crashes

@@ -1,0 +1,4 @@
+b3edf134a5698d55bd210f11c3ae833c943abcece75810f6aa8cbd7a9f293ff7  ThirdParty/wine-10.0.tar.gz
+9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2  ThirdParty/bison-3.8.2.tar.xz
+4272f3bf08a62138dc6c8c4d421b8b165f8e08d52f64f45cb87cdd9acec6c4ba  /Volumes/M2/Users/leoxcho/Downloads/Evaluation_environment_for_Windows_games_4.0_beta_1.dmg
+f09e8153aa46a581d2b56a5b1363b04832070b9409d9244a68cf482b243ff14a  ThirdParty/wine-11.0.tar.gz

@@ -1,0 +1,17 @@
+Mono path[0] = 'Z:/Volumes/SSD/Neva/Neva_Data/Managed'
+Mono config path = 'Z:/Volumes/SSD/Neva/MonoBleedingEdge/etc'
+[PhysX] Initialized MultithreadedTaskDispatcher with 4 workers.
+Initialize engine version: 2022.3.31f1 (4ede2d13e8b4)
+[Subsystems] Discovering subsystems at path Z:/Volumes/SSD/Neva/Neva_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1; jobified=0
+d3d11: could not load dd3d11.dll, probably D3D11 is not installed.
+d3d11: failed to load directx dlls (80029c4a).
+GfxDevice: creating device client; threaded=1; jobified=0
+d3d11: could not load dd3d11.dll, probably D3D11 is not installed.
+d3d11: failed to load directx dlls (80029c4a).
+Failed to initialize graphics.
+Make sure you have DirectX 11 installed, have up to date
+drivers for your graphics card and have not disabled
+3D acceleration in display settings.
+InitializeEngineGraphics failed
+PlayerInitEngineGraphics: InitializeEngineGraphics failed

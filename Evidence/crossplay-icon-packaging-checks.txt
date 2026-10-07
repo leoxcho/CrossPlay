@@ -1,0 +1,5 @@
+/Volumes/M2/Users/leoxcho/Documents/ChatGPT/CrossPlay/Build/Test/Journey.app: exact Journey executable identity, icon plist, seven PNG/ICNS sizes, current host path verified
+/Volumes/M2/Users/leoxcho/Documents/ChatGPT/CrossPlay/Build/Test/Journey-CrossPlay.app: exact Journey executable identity, icon plist, seven PNG/ICNS sizes, current host path verified
+/Volumes/M2/Users/leoxcho/Documents/ChatGPT/CrossPlay/Build/Test/Journey-Final.app: exact Journey executable identity, icon plist, seven PNG/ICNS sizes, current host path verified
+/Volumes/M2/Users/leoxcho/Documents/ChatGPT/CrossPlay/Build/IconValidation/Journey-CLI-Icon.app: exact Journey executable identity, icon plist, seven PNG/ICNS sizes, current host path verified
+/Volumes/M2/Users/leoxcho/Documents/ChatGPT/CrossPlay/Build/IconValidation/Journey-CLI-Fallback.app: exact Journey executable identity, icon plist, seven PNG/ICNS sizes, current host path verified

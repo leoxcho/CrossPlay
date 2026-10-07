@@ -1,0 +1,26 @@
+PASS: runtime generations coexist
+PASS: install preserves existing prefix marker
+PASS: dynamic runtime executes its registered tree
+PASS: independent prefix per immutable runtime ID
+PASS: mismatched override rejected before running Wine (This prefix belongs to a different Wine/D3DMetal generation. Select its original runtime or a separate prefix.)
+PASS: rejected launch leaves old marker intact
+PASS: switch back reconnects existing prefix
+PASS: selection preserves successful runtime and detaches old override
+PASS: known-good override and verification return when selected again
+PASS: removal blocked by library and retained prefix (Invalid CrossPlay runtime: This runtime is still used by:
+Game: Fixture Game
+Retained prefix: 8642762f281c5a54d9c5ccac-gptk-4-0b2-e25f150d-856d-4161-9de5-c46db9c4ae35)
+PASS: successful runtime remains a dependency after switching
+PASS: wrapper dependency survives disconnected volume (Invalid CrossPlay runtime: This runtime is still used by:
+Game: Fixture Game
+Wrapper: Offline Wrapper — /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayRuntimeTests-5CD65637-44AC-487E-A435-31CEA9B55305/Offline/Game.app)
+PASS: library removal persists only removed entry
+PASS: library removal preserves original game and prefix
+PASS: registry and wrapper dependencies reload
+PASS: unused runtime removal preserves payload
+PASS: grandfathered Crash-style matching legacy bottle preserved
+PASS: incomplete Apple graphics-only folder rejected (Invalid CrossPlay runtime: Select the complete runtime root containing bin/wine64 (or wine) and bin/wineserver. A standalone D3DMetal framework or DMG is not a runnable engine.)
+PASS: runtime with external symlink rejected (Invalid CrossPlay runtime: Runtime contains an external or broken symbolic link: /private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayRuntimeTests-5CD65637-44AC-487E-A435-31CEA9B55305/SelectedRuntime/external-link)
+PASS: corrupt registry fails closed (The data couldn’t be read because it isn’t in the correct format.)
+PASS: corrupt registry never overwritten
+ALL RUNTIME MANAGER FIXTURE CHECKS PASSED; no real games launched

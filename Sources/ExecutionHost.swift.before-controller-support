@@ -1,0 +1,678 @@
+import Foundation
+import CryptoKit
+import Darwin
+
+struct GameInfo {
+    let url: URL
+    let architecture: String
+    let graphics: String
+    let imports: [String]
+
+    static func inspect(_ url: URL) throws -> GameInfo {
+        // PE architecture lives near the beginning of the executable.
+        // Never map/decode the entire game binary just to identify it.
+        let handle = try FileHandle(forReadingFrom: url)
+        defer { try? handle.close() }
+
+        let header = try handle.read(upToCount: 4096) ?? Data()
+
+        func u16(_ data: Data, _ n: Int) -> UInt16 {
+            UInt16(data[n]) | UInt16(data[n + 1]) << 8
+        }
+
+        func u32(_ data: Data, _ n: Int) -> UInt32 {
+            UInt32(u16(data, n)) | UInt32(u16(data, n + 2)) << 16
+        }
+
+        guard header.count > 64,
+              header[0] == 77,
+              header[1] == 90 else {
+            throw HostError.message("Not a Windows PE executable")
+        }
+
+        let pe = Int(u32(header, 60))
+        guard pe <= 1024 * 1024 else { throw HostError.message("PE header exceeds inspection budget") }
+
+        // A very unusual PE may place its header beyond our first read.
+        // Read only enough additional data to cover the PE header.
+        let peData: Data
+        if pe + 24 <= header.count {
+            peData = header
+        } else {
+            try handle.seek(toOffset: 0)
+            peData = try handle.read(upToCount: pe + 512) ?? Data()
+        }
+
+        guard pe >= 64,
+              pe + 24 < peData.count,
+              Array(peData[pe ..< pe + 4]) == [80, 69, 0, 0] else {
+            throw HostError.message("Invalid PE header")
+        }
+
+        let machine = u16(peData, pe + 4)
+
+        let arch: String
+        switch machine {
+        case 0x8664:
+            arch = "x86-64 Windows"
+        case 0x14c:
+            arch = "x86 Windows (unsupported)"
+        case 0xaa64:
+            arch = "ARM64 Windows (unsupported)"
+        default:
+            arch = "Unknown (unsupported)"
+        }
+
+        // Dependency detection is informational only. Scan bounded samples
+        // rather than decoding the entire EXE / UnityPlayer.dll.
+        let candidates = [
+            "d3d11.dll",
+            "dxgi.dll",
+            "d3d12.dll",
+            "vulkan-1.dll",
+            "opengl32.dll",
+            "mono-2.0-bdwgc.dll",
+            "vcruntime140.dll",
+            "msvcp140.dll", "vcruntime140_1.dll",
+            "msvcp120.dll", "msvcr120.dll", "msvcp110.dll", "msvcr110.dll",
+            "msvcp100.dll", "msvcr100.dll"
+        ]
+
+        func sampledText(_ file: URL, limit: Int = 8 * 1024 * 1024) -> String {
+            guard let h = try? FileHandle(forReadingFrom: file) else {
+                return ""
+            }
+            defer { try? h.close() }
+
+            guard let d = try? h.read(upToCount: limit) else {
+                return ""
+            }
+
+            return String(decoding: d, as: UTF8.self).lowercased()
+        }
+
+        var text = sampledText(url)
+
+        let unity = url
+            .deletingLastPathComponent()
+            .appendingPathComponent("UnityPlayer.dll")
+
+        if FileManager.default.fileExists(atPath: unity.path) {
+            text += sampledText(unity)
+        }
+
+        let names = Array(Set(candidates.filter { text.contains($0) } + peImports(url) + peImports(unity))).sorted()
+
+        let graphicsNames = names.filter {
+            $0.contains("d3d") ||
+            $0.contains("dxgi") ||
+            $0.contains("vulkan") ||
+            $0.contains("opengl")
+        }
+
+        let graphics = graphicsNames.isEmpty
+            ? "Undetermined"
+            : "Likely: " + graphicsNames.joined(separator: ", ")
+
+        return GameInfo(
+            url: url,
+            architecture: arch,
+            graphics: graphics,
+            imports: names
+        )
+    }
+
+    // Import descriptors can live beyond the sampled first 8 MiB. Follow RVAs with
+    // fixed limits rather than increasing the sample or mapping the entire EXE.
+    static func peImports(_ url: URL) -> [String] {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return [] }
+        defer { try? handle.close() }
+        func read(_ offset: Int, _ count: Int) -> Data {
+            guard offset >= 0, count <= 65536 else { return Data() }
+            do { try handle.seek(toOffset: UInt64(offset)); return try handle.read(upToCount: count) ?? Data() } catch { return Data() }
+        }
+        func word(_ data: Data, _ n: Int, _ bytes: Int) -> Int {
+            guard n >= 0, n + bytes <= data.count else { return 0 }
+            return (0..<bytes).reduce(0) { $0 | Int(data[n + $1]) << (8 * $1) }
+        }
+        let dos = read(0, 64)
+        let pe = word(dos, 60, 4)
+        guard dos.count == 64, pe >= 64, pe <= 1024 * 1024 else { return [] }
+        let headers = read(pe, 4096)
+        guard headers.count >= 24, Array(headers.prefix(4)) == [80,69,0,0] else { return [] }
+        let count = word(headers, 6, 2), optionalSize = word(headers, 20, 2)
+        guard count <= 96, optionalSize <= 1024 else { return [] }
+        let table = read(pe + 24 + optionalSize, count * 40)
+        let magic = word(headers, 24, 2)
+        guard magic == 0x20b || magic == 0x10b else { return [] }
+        let directories = 24 + (magic == 0x20b ? 112 : 96)
+        func offset(_ rva: Int) -> Int? {
+            guard rva > 0 else { return nil }
+            for i in 0..<count {
+                let n = i * 40
+                let base = word(table, n + 12, 4), size = word(table, n + 16, 4)
+                if rva >= base, rva - base < size { return word(table, n + 20, 4) + rva - base }
+            }
+            return nil
+        }
+        var names: [String] = []
+        for (directory, stride, nameOffset) in [(1,20,12), (13,32,4)] {
+            guard let start = offset(word(headers, directories + directory * 8, 4)) else { continue }
+            let descriptors = read(start, stride * 256)
+            for index in 0..<min(256, descriptors.count / stride) {
+                let n = index * stride
+                if descriptors[n..<n+stride].allSatisfy({ $0 == 0 }) { break }
+                // Delay import addresses must be RVA-based; ignore legacy VA entries.
+                if directory == 13, word(descriptors, n, 4) & 1 == 0 { continue }
+                guard let location = offset(word(descriptors, n + nameOffset, 4)) else { continue }
+                let bytes = read(location, 256).prefix { $0 != 0 }
+                if let name = String(bytes: bytes, encoding: .ascii), name.lowercased().hasSuffix(".dll") { names.append(name.lowercased()) }
+            }
+        }
+        return Array(Set(names)).sorted()
+    }
+
+    var key: String {
+        SHA256.hash(data: Data(url.standardizedFileURL.path.utf8))
+            .prefix(12)
+            .map { String(format: "%02x", $0) }
+            .joined()
+    }
+}
+
+enum HostError: LocalizedError {
+    case message(String)
+    var errorDescription: String? { if case let .message(s) = self { return s }; return nil }
+}
+
+enum RuntimeProfile: String, CaseIterable {
+    case automatic = "Automatic"
+    case current = "CrossPlay Current"
+    case journeyCompatible = "GPTK 1.1 Compatibility"
+
+    var stableRuntimeID: String? {
+        switch self {
+        case .automatic:
+            return nil
+        case .current:
+            return "apple-gptk-current"
+        case .journeyCompatible:
+            return "apple-gptk-1.1"
+        }
+    }
+}
+
+final class ExecutionHost {
+    var runtimeProfile: RuntimeProfile = .current
+
+    // Concrete immutable runtime identity used by wrappers and the runtime
+    // registry. Legacy RuntimeProfile remains available while existing
+    // CrossPlay installations are migrated.
+    var runtimeID: String? {
+        didSet {
+            guard let runtimeID else { return }
+
+            switch runtimeID {
+            case "apple-gptk-current":
+                runtimeProfile = .current
+            case "apple-gptk-1.1":
+                runtimeProfile = .journeyCompatible
+            default:
+                break
+            }
+        }
+    }
+
+    var advertiseAVX: Bool = true
+    var prefixOverride: URL?
+    var workingDirectoryOverride: URL?
+    var started: () -> Void = {}
+    var displayPreferences: [String: String] = [:]
+
+    private let journeyRuntime = URL(
+        fileURLWithPath: "/Volumes/M2/Users/leoxcho/Applications/Game Porting Toolkit.app/Contents/Resources/wine"
+    )
+
+    func selectedRuntimeRoot() throws -> URL {
+        if let id = runtimeID, id != "apple-gptk-current", id != "apple-gptk-1.1" {
+            guard let runtime = registry.runtime(id: id) else {
+                throw HostError.message("Selected runtime is not installed: " + id)
+            }
+            return URL(fileURLWithPath: runtime.runtimePath)
+        }
+        switch runtimeProfile {
+        case .automatic, .current:
+            return root
+        case .journeyCompatible:
+            guard FileManager.default.fileExists(
+                atPath: journeyRuntime.appendingPathComponent("bin/wine64").path
+            ) else {
+                throw HostError.message(
+                    "GPTK 1.1 Compatibility runtime not found: \(journeyRuntime.path)"
+                )
+            }
+            return journeyRuntime
+        }
+    }
+
+
+    let root: URL
+    let registry: RuntimeRegistry
+    let storage: URL
+    var process: Process?
+    private var activePrefix: URL?
+    private var launchLock: Int32 = -1
+    deinit { if launchLock >= 0 { close(launchLock) } }
+    var log: (String) -> Void = { _ in }
+    var finished: (Int32) -> Void = { _ in }
+    init(root: URL, storage: URL, registry: RuntimeRegistry = .shared) {
+        self.registry = registry
+        self.root = root
+        self.storage = storage
+        self.runtimeID = RuntimeProfile.current.stableRuntimeID
+    }
+    func prefix(for game: GameInfo) -> URL {
+        if let prefixOverride = prefixOverride { return prefixOverride }
+
+        // Preserve an existing legacy prefix when its marker proves that it
+        // already belongs to the selected immutable runtime. This keeps
+        // known-good wrappers/bottles (for example Crash) untouched.
+        let legacyToken: String
+        switch runtimeProfile {
+        case .automatic, .current:
+            let identity = (try? String(
+                contentsOf: root.appendingPathComponent("RuntimeIdentity.txt"),
+                encoding: .utf8
+            ))?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+            legacyToken = identity.isEmpty
+                ? "current"
+                : identity.filter { $0.isLetter || $0.isNumber || $0 == "-" }
+
+        case .journeyCompatible:
+            legacyToken = "journey-compatible-gptk11"
+        }
+
+        let legacyPrefix = storage.appendingPathComponent(
+            "Prefixes/" + game.key + "-" + legacyToken
+        )
+
+        let legacyMarker = legacyPrefix.appendingPathComponent("CrossPlayRuntime.txt")
+
+        if FileManager.default.fileExists(atPath: legacyPrefix.path),
+           let marker = try? String(contentsOf: legacyMarker, encoding: .utf8),
+           marker.trimmingCharacters(in: .whitespacesAndNewlines) == runtimeID {
+            return legacyPrefix
+        }
+
+        // New prefixes are namespaced by immutable runtime ID. A game can
+        // therefore keep independent prefixes for different Wine/D3DMetal
+        // generations without either runtime mutating the other's bottle.
+        let selectedID = runtimeID ?? runtimeProfile.stableRuntimeID ?? "crossplay-current"
+        let runtimeToken = selectedID
+            .filter { $0.isLetter || $0.isNumber || $0 == "-" }
+
+        return storage.appendingPathComponent(
+            "Prefixes/" + game.key + "-" + runtimeToken
+        )
+    }
+    private var usesCrossOverManagedRuntime: Bool {
+        runtimeID == "crossover-26.2-gptk-4.0b2"
+    }
+
+    private var crossOverManagedRoot: URL {
+        URL(fileURLWithPath: registry.runtime(id: "crossover-26.2-gptk-4.0b2")?.runtimePath ?? "")
+    }
+
+    private func wineExecutable(for runtimeRoot: URL) -> URL {
+        if usesCrossOverManagedRuntime {
+            return crossOverManagedRoot
+                .appendingPathComponent("CrossOver-Hosted Application/wine")
+        }
+
+        let wine64 = runtimeRoot.appendingPathComponent("bin/wine64")
+        return FileManager.default.isExecutableFile(atPath: wine64.path)
+            ? wine64
+            : runtimeRoot.appendingPathComponent("bin/wine")
+    }
+
+    private func wineServerExecutable(for runtimeRoot: URL) -> URL {
+        if usesCrossOverManagedRuntime {
+            return crossOverManagedRoot
+                .appendingPathComponent("CrossOver-Hosted Application/wineserver")
+        }
+
+        return runtimeRoot.appendingPathComponent("bin/wineserver")
+    }
+
+    func launch(_ game: GameInfo, arguments: [String], variables: [String:String]) throws {
+        guard game.architecture == "x86-64 Windows" else { throw HostError.message("This runtime supports x86-64 Windows executables only") }
+        guard process == nil else { throw HostError.message("A game is already running") }
+        let runtimeRoot = try selectedRuntimeRoot()
+        // Validate the graphics generation before touching the prefix.
+        if runtimeProfile == .journeyCompatible {
+            let version = Process(); let output = Pipe()
+            version.executableURL = runtimeRoot.appendingPathComponent("bin/wine64"); version.arguments = ["--version"]; version.standardOutput = output
+            try version.run(); version.waitUntilExit()
+            let text = String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+            guard text.contains("wine-7.7"), text.contains("Toolkit 1.1") else { throw HostError.message("GPTK 1.1 profile requires its matching Wine 7.7 installation.") }
+        }
+        let wine = wineExecutable(for: runtimeRoot)
+
+        guard FileManager.default.isExecutableFile(atPath: wine.path) else {
+            throw HostError.message(
+                "Selected Wine runtime is missing: \(wine.path)"
+            )
+        }
+        let prefix = prefix(for: game)
+        let stackIdentity: String
+        if usesCrossOverManagedRuntime {
+            stackIdentity = "crossover-26.2-gptk-4.0b2"
+        } else {
+            stackIdentity = runtimeID == "apple-gptk-1.1" ? "gptk11" : runtimeID == "apple-gptk-current" ? "crossplay-current" : (runtimeID ?? "crossplay-current")
+        }
+        let marker = prefix.appendingPathComponent("CrossPlayRuntime.txt")
+        if let existing = try? String(contentsOf: marker, encoding: .utf8), existing.trimmingCharacters(in: .whitespacesAndNewlines) != stackIdentity { throw HostError.message("This prefix belongs to a different Wine/D3DMetal generation. Select its original runtime or a separate prefix.") }
+        if runtimeProfile == .journeyCompatible {
+            for name in ["d3d11.dll", "dxgi.dll", "d3d12.dll"] {
+                let expected = runtimeRoot.appendingPathComponent("lib/wine/x86_64-windows/" + name)
+                let installed = prefix.appendingPathComponent("drive_c/windows/system32/" + name)
+                if FileManager.default.fileExists(atPath: installed.path), try Data(contentsOf: installed) != Data(contentsOf: expected) { throw HostError.message("Prefix contains a different graphics generation (\(name)). Its contents were preserved. Use a matching GPTK 1.1 prefix.") }
+            }
+            let bridge = runtimeRoot.appendingPathComponent("lib/external/D3DMetal.framework/Versions/A/D3DMetal")
+            let hash = SHA256.hash(data: try Data(contentsOf: bridge)).map { String(format: "%02x", $0) }.joined()
+            guard hash == "05a7beaed4494a4f5f53d3f626a82fffc3b70146436a908b7048a0632a49e1a8" else { throw HostError.message("GPTK 1.1 D3DMetal has changed. Register and validate the complete runtime before launching.") }
+        }
+        if runtimeProfile != .journeyCompatible, !FileManager.default.fileExists(atPath: marker.path) {
+            let installed = prefix.appendingPathComponent("drive_c/windows/system32/d3d11.dll")
+            let legacy = journeyRuntime.appendingPathComponent("lib/wine/x86_64-windows/d3d11.dll")
+            if let a = try? Data(contentsOf: installed), let b = try? Data(contentsOf: legacy), a == b { throw HostError.message("This existing prefix uses GPTK 1.1 graphics. Select GPTK 1.1 Compatibility or a separate prefix; its contents were preserved.") }
+        }
+        activePrefix = prefix
+
+        // A CrossOver bottle must be created by cxbottle itself.
+        // Only create its parent directory here. Legacy Wine/GPTK
+        // runtimes continue using the existing prefix behavior.
+        if usesCrossOverManagedRuntime {
+            try FileManager.default.createDirectory(
+                at: prefix.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+        } else {
+            try FileManager.default.createDirectory(
+                at: prefix,
+                withIntermediateDirectories: true
+            )
+        }
+
+        // CrossOver cannot put the launch lock inside the bottle until
+        // cxbottle has actually created that bottle.
+        let lockURL: URL
+        if usesCrossOverManagedRuntime &&
+            !FileManager.default.fileExists(atPath: prefix.path) {
+            lockURL = prefix.deletingLastPathComponent()
+                .appendingPathComponent("." + prefix.lastPathComponent + ".CrossPlay-launch.lock")
+        } else {
+            lockURL = prefix.appendingPathComponent(".CrossPlay-launch.lock")
+        }
+
+        let lock = open(lockURL.path, O_CREAT | O_RDWR, 0o600)
+        guard lock >= 0 else { throw HostError.message("Could not lock this game prefix.") }
+        guard flock(lock, LOCK_EX | LOCK_NB) == 0 else { close(lock); throw HostError.message("This game prefix is already running in CrossPlay.") }
+        launchLock = lock
+        var scheduled = false
+        defer { if !scheduled { close(launchLock); launchLock = -1 } }
+        let logs = storage.appendingPathComponent("Logs")
+        try FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)
+        let logURL = logs.appendingPathComponent(game.key + "-" + String(Int(Date().timeIntervalSince1970)) + ".log")
+        FileManager.default.createFile(atPath: logURL.path, contents: nil)
+        let file = try FileHandle(forWritingTo: logURL)
+        // Bootstrap on a worker so prefix creation does not block the native UI.
+        let p = Process()
+        var master: Int32 = -1, slave: Int32 = -1
+        guard openpty(&master, &slave, nil, nil, nil) == 0 else { throw HostError.message("Could not create the Wine launch terminal.") }
+        let reader = FileHandle(fileDescriptor: master, closeOnDealloc: true)
+        let terminal = FileHandle(fileDescriptor: slave, closeOnDealloc: true)
+        p.executableURL = wine
+        p.currentDirectoryURL = workingDirectoryOverride ?? game.url.deletingLastPathComponent()
+        p.arguments = [game.url.path] + arguments
+        if let desktop = displayPreferences["virtualDesktop"], !desktop.isEmpty {
+            let dimensions = desktop.split(separator: "x").compactMap { Int($0) }
+            guard dimensions.count == 2, dimensions.allSatisfy({ (320...16384).contains($0) }) else { throw HostError.message("Virtual desktop resolution must be WIDTHxHEIGHT, for example 1280x720.") }
+            p.arguments = ["explorer", "/desktop=CrossPlay,\(dimensions[0])x\(dimensions[1])", game.url.path] + arguments
+        }
+        var env = ProcessInfo.processInfo.environment
+        for name in Array(env.keys) where name.hasPrefix("WINE") || name.hasPrefix("DYLD_") { env.removeValue(forKey: name) }
+        let reserved = ["WINEPREFIX", "WINELOADER", "WINESERVER", "WINEDLLPATH", "WINEDLLOVERRIDES"]
+        guard !variables.keys.contains(where: { reserved.contains($0) || $0.hasPrefix("DYLD_") }) else { throw HostError.message("Runtime paths and graphics overrides are managed by the selected coherent stack.") }
+        env.merge(variables) { _, new in new }
+        env["WINEPREFIX"] = prefix.path
+        env["WINELOADER"] = wine.path
+        env["WINESERVER"] = wineServerExecutable(for: runtimeRoot).path
+        env["WINEDEBUG"] = variables["WINEDEBUG"] ?? "+timestamp,+pid,+tid,+loaddll,+seh"
+
+        if usesCrossOverManagedRuntime {
+            let hosted = crossOverManagedRoot.appendingPathComponent("CrossOver-Hosted Application")
+            let gptk = crossOverManagedRoot.appendingPathComponent("lib64/apple_gptk")
+            let external = gptk.appendingPathComponent("external")
+
+            env["CX_ROOT"] = crossOverManagedRoot.path
+            env["CX_BOTTLE"] = prefix.lastPathComponent
+            env["CX_BOTTLE_PATH"] = prefix.deletingLastPathComponent().path
+
+            env["PATH"] =
+                crossOverManagedRoot.appendingPathComponent("bin").path +
+                ":" + hosted.path +
+                ":/usr/bin:/bin:/usr/sbin:/sbin"
+
+            env["WINEDLLPATH"] = gptk.appendingPathComponent("wine").path
+            env["CX_APPLEGPTK_LIBD3DSHARED_PATH"] =
+                external.appendingPathComponent("libd3dshared.dylib").path
+            env["DYLD_FALLBACK_LIBRARY_PATH"] =
+                external.path + ":" +
+                crossOverManagedRoot.appendingPathComponent("lib64").path +
+                ":" +
+                crossOverManagedRoot.appendingPathComponent("lib").path +
+                ":/usr/lib"
+        } else {
+            env["PATH"] = runtimeRoot.appendingPathComponent("bin").path + ":/usr/bin:/bin:/usr/sbin:/sbin"
+            env["WINEDLLPATH"] = runtimeRoot.appendingPathComponent("lib/wine").path
+            env["DYLD_FALLBACK_LIBRARY_PATH"] =
+                runtimeRoot.appendingPathComponent("lib/external").path +
+                ":" +
+                runtimeRoot.appendingPathComponent("lib").path +
+                ":/usr/lib"
+        }
+
+        if runtimeProfile == .journeyCompatible {
+            env.removeValue(forKey: "D3DM_MTL4")
+        }
+
+        env["WINEDLLOVERRIDES"] =
+            variables["WINEDLLOVERRIDES"] ?? "d3d11,dxgi,d3d12,d3d10=n,b"
+        if advertiseAVX {
+            env["ROSETTA_ADVERTISE_AVX"] = "1"
+        } else {
+            env.removeValue(forKey: "ROSETTA_ADVERTISE_AVX")
+        }
+        p.environment = env; p.standardInput = terminal; p.standardOutput = terminal; p.standardError = terminal
+        log(
+            "Runtime: \(runtimeID ?? runtimeProfile.rawValue)\n" +
+            "Wine: \(wine.path)\n" +
+            "AVX advertisement: \(advertiseAVX ? "ON" : "OFF")\n" +
+            "Working directory: \(p.currentDirectoryURL!.path)\n" +
+            "Prefix: \(prefix.path)\n" +
+            "Log: \(logURL.path)\n"
+        )
+        reader.readabilityHandler = { [weak self] handle in
+            let d = handle.availableData
+            guard !d.isEmpty else { handle.readabilityHandler = nil; try? file.close(); return }
+            try? file.write(contentsOf: d)
+            let message = String(decoding: d, as: UTF8.self)
+            DispatchQueue.main.async { self?.log(message) }
+        }
+        p.terminationHandler = { [weak self] p in
+            // Wait for this prefix's Wine server, including child game processes.
+            // This never kills another game's runtime or a shared global server.
+            let waiter = Process(); waiter.executableURL = self?.wineServerExecutable(for: runtimeRoot)
+            waiter.arguments = ["-w"]; waiter.environment = env
+            DispatchQueue.main.async {
+                self?.log("\nRoot Windows process exited with status \(p.terminationStatus). Waiting for this game's runtime.\n")
+            }
+            do { try waiter.run(); waiter.waitUntilExit() } catch { }
+            // Give the PTY a brief opportunity to deliver the final Wine/D3DMetal
+            // diagnostics before tearing down its readability handler.
+            Thread.sleep(forTimeInterval: 0.25)
+
+            let remaining = reader.availableData
+            if !remaining.isEmpty {
+                try? file.write(contentsOf: remaining)
+                let message = String(decoding: remaining, as: UTF8.self)
+                DispatchQueue.main.async {
+                    self?.log(message)
+                }
+            }
+
+            let finalMessage =
+                "\nRoot Windows process exited with status \(p.terminationStatus).\n" +
+                "Game runtime finished. Exit status: \(p.terminationStatus).\n"
+
+            if let finalData = finalMessage.data(using: .utf8) {
+                try? file.write(contentsOf: finalData)
+            }
+
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.log("Game runtime finished. Exit status: \(p.terminationStatus).\n")
+                self.process = nil
+
+                if self.launchLock >= 0 {
+                    close(self.launchLock)
+                    self.launchLock = -1
+                }
+
+                reader.readabilityHandler = nil
+                try? reader.close()
+                try? file.close()
+
+                self.finished(p.terminationStatus)
+            }
+        }
+        if !FileManager.default.fileExists(atPath: prefix.appendingPathComponent("system.reg").path) {
+            let boot = Process()
+            var bootEnv = env
+            bootEnv["WINEDLLOVERRIDES"] = "mscoree,mshtml="
+
+            if usesCrossOverManagedRuntime {
+                // cxbottle is a CrossOver management utility, not the game.
+                // Give it the same minimal CrossOver environment that is
+                // known to create a valid bottle successfully.
+                bootEnv = ProcessInfo.processInfo.environment
+
+                for key in Array(bootEnv.keys) {
+                    if key.hasPrefix("WINE") ||
+                       key.hasPrefix("DYLD_") ||
+                       key.hasPrefix("CX_") {
+                        bootEnv.removeValue(forKey: key)
+                    }
+                }
+
+                bootEnv["CX_ROOT"] = crossOverManagedRoot.path
+                bootEnv["CX_BOTTLE"] = prefix.lastPathComponent
+                bootEnv["CX_BOTTLE_PATH"] =
+                    prefix.deletingLastPathComponent().path
+                bootEnv["WINEPREFIX"] = prefix.path
+
+                bootEnv["PATH"] =
+                    crossOverManagedRoot.appendingPathComponent("bin").path +
+                    ":" +
+                    crossOverManagedRoot
+                        .appendingPathComponent("CrossOver-Hosted Application").path +
+                    ":/usr/bin:/bin:/usr/sbin:/sbin"
+
+                let cxbottle = crossOverManagedRoot
+                    .appendingPathComponent("bin/cxbottle")
+
+                guard FileManager.default.isExecutableFile(atPath: cxbottle.path) else {
+                    throw HostError.message(
+                        "CrossOver bottle creator is missing: \(cxbottle.path)"
+                    )
+                }
+
+                // cxbottle creates BOTTLE inside CX_BOTTLE_PATH.
+                // The resulting directory is the same per-game prefix
+                // CrossPlay already selected above.
+                boot.executableURL = cxbottle
+                boot.arguments = [
+                    "--bottle", prefix.lastPathComponent,
+                    "--create",
+                    "--template", "win10_64",
+                    "--description", "CrossPlay managed game bottle",
+                    "--verbose"
+                ]
+            } else {
+                boot.executableURL = wine
+                boot.arguments = ["wineboot", "-u"]
+            }
+
+            boot.environment = bootEnv
+            boot.standardOutput = file
+            boot.standardError = file
+
+            try boot.run()
+            process = boot
+            scheduled = true
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                boot.waitUntilExit()
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    self.process = nil
+                    if let bootLog = try? String(contentsOf: logURL, encoding: .utf8) { self.log(bootLog) }
+                    guard boot.terminationStatus == 0 else {
+                        self.log("Prefix initialization failed: \(boot.terminationStatus)\n")
+                        reader.readabilityHandler = nil
+                        try? file.close(); close(self.launchLock); self.launchLock = -1; self.finished(boot.terminationStatus); return
+                    }
+                    do {
+                        if self.runtimeProfile != .journeyCompatible && !self.usesCrossOverManagedRuntime {
+                            try self.installGraphics(prefix: prefix)
+                        }
+                        try p.run(); try? terminal.close()
+                        self.process = p; try? stackIdentity.write(to: marker, atomically: true, encoding: .utf8); self.started()
+                    }
+                    catch { close(self.launchLock); self.launchLock = -1; self.log(error.localizedDescription + "\n"); self.finished(-1) }
+                }
+            }
+        } else {
+            if runtimeProfile != .journeyCompatible && !usesCrossOverManagedRuntime {
+                try installGraphics(prefix: prefix)
+            }
+            try p.run(); try? terminal.close(); process = p; scheduled = true; try? stackIdentity.write(to: marker, atomically: true, encoding: .utf8); started()
+        }
+    }
+    func stop() throws {
+        guard let prefix = activePrefix else { return }
+        let stop = Process()
+        let runtimeRoot = try selectedRuntimeRoot()
+        stop.executableURL = wineServerExecutable(for: runtimeRoot)
+        stop.arguments = ["-k"]
+        var env = ProcessInfo.processInfo.environment
+        env["WINEPREFIX"] = prefix.path
+        stop.environment = env
+        try stop.run()
+        log("Stopping processes in this game's isolated environment.\n")
+    }
+    private func installGraphics(prefix: URL) throws {
+        let runtimeRoot = try selectedRuntimeRoot()
+        let graphics = runtimeRoot.appendingPathComponent("AppleGraphics")
+        let source = FileManager.default.fileExists(atPath: graphics.path) ? graphics : runtimeRoot.appendingPathComponent("lib/wine/x86_64-windows")
+        let target = prefix.appendingPathComponent("drive_c/windows/system32")
+        for name in ["d3d10.dll", "d3d11.dll", "dxgi.dll", "d3d12.dll"] {
+            let src = source.appendingPathComponent(name), dst = target.appendingPathComponent(name)
+            guard FileManager.default.fileExists(atPath: src.path) else { throw HostError.message("Official GPTK 4 bridge missing: " + src.path) }
+            if FileManager.default.fileExists(atPath: dst.path) { try FileManager.default.removeItem(at: dst) }
+            try FileManager.default.copyItem(at: src, to: dst)
+        }
+    }
+
+}

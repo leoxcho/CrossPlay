@@ -1,0 +1,11 @@
+PASS: deleted disposable DLL produces Needs repair
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/d6b8671c7d58d34a7de66be2-1791291175.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: official Microsoft repair restores missing native DLL and persists verified installation

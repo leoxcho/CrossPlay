@@ -1,0 +1,132 @@
+PASS: bounded sample detects every supported family including v14 _1
+PASS: x86 requirement independent of x64
+PASS: missing prefix requests install
+PASS: read-only preflight / cancellation creates no metadata, cache or prefix
+PASS: native architecture-matched DLLs satisfy dependency
+PASS: installation persists with runtime/prefix association
+PASS: second preflight requires no reinstall
+PASS: another runtime-specific prefix independently missing
+PASS: metadata mismatch becomes repair
+PASS: Wine builtin is not confirmed Microsoft dependency
+PASS: wrong DLL architecture rejected
+PASS: lookalike source rejected
+PASS: failed install never gets installation date
+PASS: library requirements and successfulRuntime persist separately
+PASS: bounded RVA import read beyond sample
+INSTALLING DISPOSABLE: vc-v14-x64
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/d6b8671c7d58d34a7de66be2-1791291046.log
+system encoding='UTF-8'
+CXConfig->read(/Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/etc/CrossOver.conf)
+CXConfig->read(/Volumes/M2/Users/leoxcho/Library/Application Support/CrossOver/CrossOver.conf)
+6791: Grabbing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109fe73.lock' lock
+6791: Got the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109fe73.lock' lock
+Running '/Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/share/crossover/bottle_templates/win10_64/setup' '--create' '--description' 'CrossPlay managed game bottle'
+-> rc=0  (took 16.4509370326996 seconds)
+CXRWConfig->new(/private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest/cxbottle.conf)
+'/private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest/cxbottle.conf' not modified -> no need to save
+6791: Releasing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109fe73.lock' lock
+6791: Grabbing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109fe73.lock' lock
+6791: Got the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109fe73.lock' lock
+CXConfig->read(/private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest/cxbottle.conf)
+6791: Releasing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109fe73.lock' lock
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-v14-x64
+INSTALLING DISPOSABLE: vc-2013-x64
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/0520c228c00b7ac9327f2ac8-1791291071.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-2013-x64
+INSTALLING DISPOSABLE: vc-2012-x64
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/05a9163b1aa934db5152e3fd-1791291079.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-2012-x64
+INSTALLING DISPOSABLE: vc-2010-x64
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/09a9a79982a2f6c65dd81588-1791291088.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-2010-x64
+INSTALLING DISPOSABLE: vc-v14-x86
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/994e7e6f171079049f15be71-1791291097.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-v14-x86
+INSTALLING DISPOSABLE: vc-2013-x86
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/b4154a9c69f0a4819233d744-1791291105.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-2013-x86
+INSTALLING DISPOSABLE: vc-2012-x86
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/30bb7916c2590c6a97b136ec-1791291112.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-2012-x86
+INSTALLING DISPOSABLE: vc-2010-x86
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/cd2876b7f413e7ae908473aa-1791291120.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: real install vc-2010-x86
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest/drive_c/windows/system32
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009/Support/Logs/22c84a23625f1ae280736267-1791291129.log
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: post-install launch keeps original runtime ID and prefix
+PASS: official Microsoft v14 x64 installed and verified in disposable prefix
+PASS: real installation remembered
+PASS: second launch preflight skips real installed v14
+TEST ARTIFACTS: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-D2D31A61-E97D-49E5-A14A-542FD7349009
+ALL DEPENDENCY CHECKS PASSED

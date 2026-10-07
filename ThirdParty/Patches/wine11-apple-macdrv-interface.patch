@@ -1,0 +1,295 @@
+--- a/dlls/winemac.drv/macdrv_main.c
++++ b/dlls/winemac.drv/macdrv_main.c
+@@ -33,6 +33,7 @@
+ #define WIN32_NO_STATUS
+ #include "macdrv.h"
+ #include "shellapi.h"
++#include "winreg.h"
+ #include "wine/server.h"
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(macdrv);
+@@ -420,6 +421,213 @@
+ }
+ 
+ 
++/* Local LGPL-2.1-or-later adaptation, 2026-10-05.
++ * Preserve the published Apple driver table ABI without changing Apple code.
++ * Wine 11 has a three-pointer window prefix and switches GSBASE across Unix
++ * transitions. Supply a four-pointer compatibility view and GS-aware callbacks.
++ */
++struct gptk_window_view {
++    HWND hwnd;
++    macdrv_window window;
++    macdrv_view view;
++    macdrv_view client_view;
++    unsigned char rest[sizeof(struct macdrv_win_data) - 3 * sizeof(void *)];
++    struct macdrv_win_data *real;
++};
++static struct macdrv_win_data *gptk_get_win_data(HWND hwnd)
++{
++    struct macdrv_win_data *data = get_win_data(hwnd);
++    struct gptk_window_view *view;
++    if (!data) return NULL;
++    if (!(view = malloc(sizeof(*view)))) { release_win_data(data); return NULL; }
++    view->hwnd = data->hwnd; view->window = data->cocoa_window;
++    view->view = view->client_view = data->client_view;
++    memcpy(view->rest, (char *)data + 3 * sizeof(void *), sizeof(view->rest));
++    view->real = data;
++    return (struct macdrv_win_data *)view;
++}
++static void gptk_release_win_data(struct macdrv_win_data *arg)
++{
++    struct gptk_window_view *view = (struct gptk_window_view *)arg;
++    release_win_data(view->real); free(view);
++}
++static UINT64 gptk_callbacks[14];
++extern void _thread_set_tsd_base(uint64_t);
++static LSTATUS WINAPI gptk_RegQueryValueExA(HKEY a, LPCSTR b, LPDWORD c, LPDWORD d, BYTE *e, LPDWORD f)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LSTATUS result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LSTATUS (WINAPI *)(HKEY a, LPCSTR b, LPDWORD c, LPDWORD d, BYTE *e, LPDWORD f))(UINT_PTR)gptk_callbacks[0])(a,b,c,d,e,f);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static LSTATUS WINAPI gptk_RegSetValueExA(HKEY a, LPCSTR b, DWORD c, DWORD d, const BYTE *e, DWORD f)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LSTATUS result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LSTATUS (WINAPI *)(HKEY a, LPCSTR b, DWORD c, DWORD d, const BYTE *e, DWORD f))(UINT_PTR)gptk_callbacks[1])(a,b,c,d,e,f);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static LSTATUS WINAPI gptk_RegOpenKeyExA(HKEY a, LPCSTR b, DWORD c, DWORD d, HKEY *e)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LSTATUS result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LSTATUS (WINAPI *)(HKEY a, LPCSTR b, DWORD c, DWORD d, HKEY *e))(UINT_PTR)gptk_callbacks[2])(a,b,c,d,e);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static LSTATUS WINAPI gptk_RegCreateKeyExA(HKEY a, LPCSTR b, DWORD c, LPSTR d, DWORD e, DWORD f, LPSECURITY_ATTRIBUTES g, HKEY *h, LPDWORD i)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LSTATUS result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LSTATUS (WINAPI *)(HKEY a, LPCSTR b, DWORD c, LPSTR d, DWORD e, DWORD f, LPSECURITY_ATTRIBUTES g, HKEY *h, LPDWORD i))(UINT_PTR)gptk_callbacks[3])(a,b,c,d,e,f,g,h,i);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static LSTATUS WINAPI gptk_RegCloseKey(HKEY a)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LSTATUS result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LSTATUS (WINAPI *)(HKEY a))(UINT_PTR)gptk_callbacks[4])(a);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static BOOL WINAPI gptk_EnumDisplayMonitors(HDC a, LPRECT b, MONITORENUMPROC c, LPARAM d)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    BOOL result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((BOOL (WINAPI *)(HDC a, LPRECT b, MONITORENUMPROC c, LPARAM d))(UINT_PTR)gptk_callbacks[5])(a,b,c,d);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static BOOL WINAPI gptk_GetMonitorInfoA(HMONITOR a, LPMONITORINFO b)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    BOOL result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((BOOL (WINAPI *)(HMONITOR a, LPMONITORINFO b))(UINT_PTR)gptk_callbacks[6])(a,b);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static BOOL WINAPI gptk_AdjustWindowRectEx(LPRECT a, DWORD b, BOOL c, DWORD d)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    BOOL result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((BOOL (WINAPI *)(LPRECT a, DWORD b, BOOL c, DWORD d))(UINT_PTR)gptk_callbacks[7])(a,b,c,d);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static LONG_PTR WINAPI gptk_GetWindowLongPtrW(HWND a, int b)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LONG_PTR result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LONG_PTR (WINAPI *)(HWND a, int b))(UINT_PTR)gptk_callbacks[8])(a,b);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static BOOL WINAPI gptk_GetWindowRect(HWND a, LPRECT b)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    BOOL result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((BOOL (WINAPI *)(HWND a, LPRECT b))(UINT_PTR)gptk_callbacks[9])(a,b);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static BOOL WINAPI gptk_MoveWindow(HWND a, int b, int c, int d, int e, BOOL f)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    BOOL result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((BOOL (WINAPI *)(HWND a, int b, int c, int d, int e, BOOL f))(UINT_PTR)gptk_callbacks[10])(a,b,c,d,e,f);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static BOOL WINAPI gptk_SetWindowPos(HWND a, HWND b, int c, int d, int e, int f, UINT g)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    BOOL result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((BOOL (WINAPI *)(HWND a, HWND b, int c, int d, int e, int f, UINT g))(UINT_PTR)gptk_callbacks[11])(a,b,c,d,e,f,g);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static INT WINAPI gptk_GetSystemMetrics(INT a)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    INT result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((INT (WINAPI *)(INT a))(UINT_PTR)gptk_callbacks[12])(a);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++static LONG_PTR WINAPI gptk_SetWindowLongPtrW(HWND a, INT b, LONG_PTR c)
++{
++    TEB *teb = NtCurrentTeb();
++    void *native_gs = *(void **)((char *)teb + 0x320);
++    LONG_PTR result;
++    _thread_set_tsd_base((uint64_t)teb);
++    result = ((LONG_PTR (WINAPI *)(HWND a, INT b, LONG_PTR c))(UINT_PTR)gptk_callbacks[13])(a,b,c);
++    _thread_set_tsd_base((uint64_t)native_gs);
++    return result;
++}
++/* Local adaptation (2026-10-05) of Apple's LGPL-2.1-or-later
++ * macdrv_functions patch in apple/homebrew-apple. Upstream Wine 10 uses a
++ * PE/Unix split: Windows callbacks are passed in process_attach instead of
++ * being directly linked into this Unix module. Apple binaries are unchanged.
++ */
++struct gptk_macdrv_functions
++{
++    void (*init_display_devices)(BOOL);
++    struct macdrv_win_data *(*get_win_data)(HWND);
++    void (*release_win_data)(struct macdrv_win_data *);
++    macdrv_window (*get_cocoa_window)(HWND, BOOL);
++    macdrv_metal_device (*create_metal_device)(void);
++    void (*release_metal_device)(macdrv_metal_device);
++    macdrv_metal_view (*create_metal_view)(macdrv_view, macdrv_metal_device);
++    macdrv_metal_layer (*get_metal_layer)(macdrv_metal_view);
++    void (*release_metal_view)(macdrv_metal_view);
++    void (*on_main_thread)(dispatch_block_t);
++    UINT64 win32[14];
++};
++extern void OnMainThread(dispatch_block_t);
++static void gptk_init_display_devices(BOOL force)
++{
++    /* Wine 10 maintains displays through win32u, rather than the Wine 8
++     * driver registry path. Request its normal display refresh. */
++    if (force) NtUserCallNoParam(NtUserCallNoParam_DisplayModeChanged);
++}
++__attribute__((visibility("default")))
++struct gptk_macdrv_functions macdrv_functions = {
++    gptk_init_display_devices, gptk_get_win_data, gptk_release_win_data,
++    macdrv_get_cocoa_window, macdrv_create_metal_device,
++    macdrv_release_metal_device, macdrv_view_create_metal_view,
++    macdrv_view_get_metal_layer, macdrv_view_release_metal_view, OnMainThread,
++    {(UINT64)gptk_RegQueryValueExA,(UINT64)gptk_RegSetValueExA,(UINT64)gptk_RegOpenKeyExA,(UINT64)gptk_RegCreateKeyExA,(UINT64)gptk_RegCloseKey,(UINT64)gptk_EnumDisplayMonitors,(UINT64)gptk_GetMonitorInfoA,(UINT64)gptk_AdjustWindowRectEx,(UINT64)gptk_GetWindowLongPtrW,(UINT64)gptk_GetWindowRect,(UINT64)gptk_MoveWindow,(UINT64)gptk_SetWindowPos,(UINT64)gptk_GetSystemMetrics,(UINT64)gptk_SetWindowLongPtrW}
++};
++
+ /***********************************************************************
+  *              macdrv_init
+  */
+@@ -429,6 +637,7 @@
+     SessionAttributeBits attributes;
+     OSStatus status;
+ 
++    memcpy(gptk_callbacks, params->gptk_win32, sizeof(gptk_callbacks));
+     app_icon_callback = params->app_icon_callback;
+     app_quit_request_callback = params->app_quit_request_callback;
+ 
+@@ -621,7 +830,7 @@
+         UINT64 app_icon_callback;
+         UINT64 app_quit_request_callback;
+     } *params32 = arg;
+-    struct init_params params;
++    struct init_params params = {0};
+ 
+     params.strings = UlongToPtr(params32->strings);
+     params.app_icon_callback = params32->app_icon_callback;
+--- a/dlls/winemac.drv/dllmain.c
++++ b/dlls/winemac.drv/dllmain.c
+@@ -26,6 +26,7 @@
+ #include "ntgdi.h"
+ #include "macdrv_res.h"
+ #include "shellapi.h"
++#include "winreg.h"
+ #include "unixlib.h"
+ #include "wine/debug.h"
+ 
+@@ -403,7 +404,23 @@
+     params.strings = strings;
+     params.app_icon_callback = (UINT_PTR)macdrv_app_icon;
+     params.app_quit_request_callback = (UINT_PTR)macdrv_app_quit_request;
++    /* Local Apple LGPL driver-interface adaptation, 2026-10-05. */
++    params.gptk_win32[0] = (UINT_PTR)RegQueryValueExA;
++    params.gptk_win32[1] = (UINT_PTR)RegSetValueExA;
++    params.gptk_win32[2] = (UINT_PTR)RegOpenKeyExA;
++    params.gptk_win32[3] = (UINT_PTR)RegCreateKeyExA;
++    params.gptk_win32[4] = (UINT_PTR)RegCloseKey;
++    params.gptk_win32[5] = (UINT_PTR)EnumDisplayMonitors;
++    params.gptk_win32[6] = (UINT_PTR)GetMonitorInfoA;
++    params.gptk_win32[7] = (UINT_PTR)AdjustWindowRectEx;
++    params.gptk_win32[8] = (UINT_PTR)GetWindowLongPtrW;
++    params.gptk_win32[9] = (UINT_PTR)GetWindowRect;
++    params.gptk_win32[10] = (UINT_PTR)MoveWindow;
++    params.gptk_win32[11] = (UINT_PTR)SetWindowPos;
++    params.gptk_win32[12] = (UINT_PTR)GetSystemMetrics;
++    params.gptk_win32[13] = (UINT_PTR)SetWindowLongPtrW;
+ 
++
+     if (MACDRV_CALL(init, &params)) return FALSE;
+ 
+     return TRUE;
+--- a/dlls/winemac.drv/unixlib.h
++++ b/dlls/winemac.drv/unixlib.h
+@@ -41,6 +41,7 @@
+     struct localized_string *strings;
+     UINT64 app_icon_callback;
+     UINT64 app_quit_request_callback;
++    UINT64 gptk_win32[14];
+ };
+ 
+ /* macdrv_quit_result params */
+--- a/dlls/winemac.drv/Makefile.in
++++ b/dlls/winemac.drv/Makefile.in
+@@ -1,6 +1,6 @@
+ MODULE    = winemac.drv
+ UNIXLIB   = winemac.so
+-IMPORTS   = uuid rpcrt4 user32 gdi32 win32u
++IMPORTS   = advapi32 uuid rpcrt4 user32 gdi32 win32u
+ DELAYIMPORTS = ole32 shell32 imm32
+ UNIX_LIBS    = \
+ 	-lwin32u \

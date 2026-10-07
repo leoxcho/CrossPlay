@@ -1,0 +1,38 @@
+Sources/RuntimeRegistry.swift:315:10: error: invalid redeclaration of 'retainGameResources'
+296 | 
+297 | extension RuntimeRegistry {
+298 |     func retainGameResources(_ game: LibraryGame) throws {
+    |          `- note: 'retainGameResources' previously declared here
+299 |         let previous = document
+300 |         var records = document.retainedGameResources ?? []
+    :
+313 |     // Persist every created/imported wrapper, including apps on disconnected volumes.
+314 |     // References are deliberately retained until the user confirms removal of the app.
+315 |     func retainGameResources(_ game: LibraryGame) throws {
+    |          `- error: invalid redeclaration of 'retainGameResources'
+316 |         guard game.wrapped == true else { return }
+317 |         let id = game.runtimeID ?? RuntimeProfile(rawValue: game.runtime)?.stableRuntimeID
+
+Sources/RuntimeRegistry.swift:318:29: error: thrown expression type 'any Error' cannot be converted to error type 'Never'
+316 |         guard game.wrapped == true else { return }
+317 |         let id = game.runtimeID ?? RuntimeProfile(rawValue: game.runtime)?.stableRuntimeID
+318 |         guard let id else { throw RuntimeRegistryError.invalidRuntime("Cannot determine retained wrapper runtime.") }
+    |                             `- error: thrown expression type 'any Error' cannot be converted to error type 'Never'
+319 |         try recordWrapper(path: "Unlocated legacy wrappers for " + game.path, runtimeID: id, gameName: game.name)
+320 |         if let successful = game.successfulRuntime, successful != id {
+
+Sources/RuntimeRegistry.swift:319:13: error: thrown expression type 'any Error' cannot be converted to error type 'Never'
+317 |         let id = game.runtimeID ?? RuntimeProfile(rawValue: game.runtime)?.stableRuntimeID
+318 |         guard let id else { throw RuntimeRegistryError.invalidRuntime("Cannot determine retained wrapper runtime.") }
+319 |         try recordWrapper(path: "Unlocated legacy wrappers for " + game.path, runtimeID: id, gameName: game.name)
+    |             `- error: thrown expression type 'any Error' cannot be converted to error type 'Never'
+320 |         if let successful = game.successfulRuntime, successful != id {
+321 |             try recordWrapper(path: "Unlocated known-working wrappers for " + game.path, runtimeID: successful, gameName: game.name)
+
+Sources/RuntimeRegistry.swift:321:17: error: thrown expression type 'any Error' cannot be converted to error type 'Never'
+319 |         try recordWrapper(path: "Unlocated legacy wrappers for " + game.path, runtimeID: id, gameName: game.name)
+320 |         if let successful = game.successfulRuntime, successful != id {
+321 |             try recordWrapper(path: "Unlocated known-working wrappers for " + game.path, runtimeID: successful, gameName: game.name)
+    |                 `- error: thrown expression type 'any Error' cannot be converted to error type 'Never'
+322 |         }
+323 |     }

@@ -1,0 +1,4 @@
+STRIPPROG=llvm-strip /private/tmp/gptk4-wine-source/tools/install-sh -m 644  dlls/ntdll/x86_64-windows/ntdll.dll /private/tmp/gptk4-runtime/lib/wine/x86_64-windows/ntdll.dll
+tools/winebuild/winebuild --builtin /private/tmp/gptk4-runtime/lib/wine/x86_64-windows/ntdll.dll
+STRIPPROG="strip" /private/tmp/gptk4-wine-source/tools/install-sh  dlls/ntdll/ntdll.so /private/tmp/gptk4-runtime/lib/wine/x86_64-unix/ntdll.so
+/private/tmp/gptk4-wine-source/tools/install-sh -m 644  dlls/ntdll/x86_64-windows/libntdll.a /private/tmp/gptk4-runtime/lib/wine/x86_64-windows/libntdll.a

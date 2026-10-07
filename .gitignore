@@ -1,0 +1,8 @@
+Build/
+Runtime/
+RuntimeMedia/
+ThirdParty/wine-wine-10.0/
+ThirdParty/wine-wine-11.0/
+ThirdParty/bison-3.8.2/
+ThirdParty/*.tar.*
+*.app/

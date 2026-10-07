@@ -1,0 +1,43 @@
+PASS: bounded sample detects every supported family including v14 _1
+PASS: x86 requirement independent of x64
+PASS: missing prefix requests install
+PASS: read-only preflight / cancellation creates no metadata, cache or prefix
+PASS: native architecture-matched DLLs satisfy dependency
+PASS: installation persists with runtime/prefix association
+PASS: second preflight requires no reinstall
+PASS: another runtime-specific prefix independently missing
+PASS: metadata mismatch becomes repair
+PASS: Wine builtin is not confirmed Microsoft dependency
+PASS: wrong DLL architecture rejected
+PASS: lookalike source rejected
+PASS: failed install never gets installation date
+PASS: library requirements and successfulRuntime persist separately
+PASS: bounded RVA import read beyond sample
+Runtime: crossover-26.2-gptk-4.0b2
+Wine: /Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/CrossOver-Hosted Application/wine
+AVX advertisement: ON
+Working directory: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54/Cache
+Prefix: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54/DisposableMicrosoftTest
+Log: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54/Support/Logs/f01f65e8915a16bcab2f7ab6-1791290805.log
+system encoding='UTF-8'
+CXConfig->read(/Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/etc/CrossOver.conf)
+CXConfig->read(/Volumes/M2/Users/leoxcho/Library/Application Support/CrossOver/CrossOver.conf)
+5802: Grabbing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109f2ac.lock' lock
+5802: Got the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109f2ac.lock' lock
+Running '/Volumes/M2/Users/leoxcho/Library/Application Support/CrossPlay/Runtimes/crossover-26.2-gptk-4.0b2-native-layout/CrossOver/share/crossover/bottle_templates/win10_64/setup' '--create' '--description' 'CrossPlay managed game bottle'
+-> rc=0  (took 14.9799439907074 seconds)
+CXRWConfig->new(/private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54/DisposableMicrosoftTest/cxbottle.conf)
+'/private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54/DisposableMicrosoftTest/cxbottle.conf' not modified -> no need to save
+5802: Releasing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109f2ac.lock' lock
+5802: Grabbing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109f2ac.lock' lock
+5802: Got the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109f2ac.lock' lock
+CXConfig->read(/private/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54/DisposableMicrosoftTest/cxbottle.conf)
+5802: Releasing the '/var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T//.wine-501/bottle-100000f-109f2ac.lock' lock
+
+Root Windows process exited with status 0. Waiting for this game's runtime.
+Game runtime finished. Exit status: 0.
+PASS: official Microsoft v14 x64 installed and verified in disposable prefix
+PASS: real installation remembered
+PASS: second launch preflight skips real installed v14
+TEST ARTIFACTS: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-C0C16135-A04C-404A-BB80-14877B7C5C54
+ALL DEPENDENCY CHECKS PASSED

@@ -1,0 +1,117 @@
+--- a/dlls/winemac.drv/macdrv_main.c
++++ b/dlls/winemac.drv/macdrv_main.c
+@@ -422,7 +422,42 @@
+ 
+     localized_strings = dict;
+ }
++
+ 
++/* Local adaptation (2026-10-05) of Apple's LGPL-2.1-or-later
++ * macdrv_functions patch in apple/homebrew-apple. Upstream Wine 10 uses a
++ * PE/Unix split: Windows callbacks are passed in process_attach instead of
++ * being directly linked into this Unix module. Apple binaries are unchanged.
++ */
++struct gptk_macdrv_functions
++{
++    void (*init_display_devices)(BOOL);
++    struct macdrv_win_data *(*get_win_data)(HWND);
++    void (*release_win_data)(struct macdrv_win_data *);
++    macdrv_window (*get_cocoa_window)(HWND, BOOL);
++    macdrv_metal_device (*create_metal_device)(void);
++    void (*release_metal_device)(macdrv_metal_device);
++    macdrv_metal_view (*create_metal_view)(macdrv_view, macdrv_metal_device);
++    macdrv_metal_layer (*get_metal_layer)(macdrv_metal_view);
++    void (*release_metal_view)(macdrv_metal_view);
++    void (*on_main_thread)(dispatch_block_t);
++    UINT64 win32[14];
++};
++extern void OnMainThread(dispatch_block_t);
++static void gptk_init_display_devices(BOOL force)
++{
++    /* Wine 10 maintains displays through win32u, rather than the Wine 8
++     * driver registry path. Request its normal display refresh. */
++    if (force) NtUserCallNoParam(NtUserCallNoParam_DisplayModeChanged);
++}
++__attribute__((visibility("default")))
++struct gptk_macdrv_functions macdrv_functions = {
++    gptk_init_display_devices, get_win_data, release_win_data,
++    macdrv_get_cocoa_window, macdrv_create_metal_device,
++    macdrv_release_metal_device, macdrv_view_create_metal_view,
++    macdrv_view_get_metal_layer, macdrv_view_release_metal_view, OnMainThread,
++    {0}
++};
+ 
+ /***********************************************************************
+  *              macdrv_init
+@@ -433,6 +468,7 @@
+     SessionAttributeBits attributes;
+     OSStatus status;
+ 
++    memcpy(macdrv_functions.win32, params->gptk_win32, sizeof(macdrv_functions.win32));
+     app_icon_callback = params->app_icon_callback;
+     app_quit_request_callback = params->app_quit_request_callback;
+ 
+@@ -625,7 +661,7 @@
+         UINT64 app_icon_callback;
+         UINT64 app_quit_request_callback;
+     } *params32 = arg;
+-    struct init_params params;
++    struct init_params params = {0};
+ 
+     params.strings = UlongToPtr(params32->strings);
+     params.app_icon_callback = params32->app_icon_callback;
+--- a/dlls/winemac.drv/dllmain.c
++++ b/dlls/winemac.drv/dllmain.c
+@@ -23,6 +23,7 @@
+ #include "macdrv_dll.h"
+ #include "macdrv_res.h"
+ #include "shellapi.h"
++#include "winreg.h"
+ #include "wine/debug.h"
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(macdrv);
+@@ -399,7 +400,23 @@
+     params.strings = strings;
+     params.app_icon_callback = (UINT_PTR)macdrv_app_icon;
+     params.app_quit_request_callback = (UINT_PTR)macdrv_app_quit_request;
++    /* Local adaptation of Apple LGPL macdrv_functions interface, 2026-10-05. */
++    params.gptk_win32[0] = (UINT_PTR)RegQueryValueExA;
++    params.gptk_win32[1] = (UINT_PTR)RegSetValueExA;
++    params.gptk_win32[2] = (UINT_PTR)RegOpenKeyExA;
++    params.gptk_win32[3] = (UINT_PTR)RegCreateKeyExA;
++    params.gptk_win32[4] = (UINT_PTR)RegCloseKey;
++    params.gptk_win32[5] = (UINT_PTR)EnumDisplayMonitors;
++    params.gptk_win32[6] = (UINT_PTR)GetMonitorInfoA;
++    params.gptk_win32[7] = (UINT_PTR)AdjustWindowRectEx;
++    params.gptk_win32[8] = (UINT_PTR)GetWindowLongPtrW;
++    params.gptk_win32[9] = (UINT_PTR)GetWindowRect;
++    params.gptk_win32[10] = (UINT_PTR)MoveWindow;
++    params.gptk_win32[11] = (UINT_PTR)SetWindowPos;
++    params.gptk_win32[12] = (UINT_PTR)GetSystemMetrics;
++    params.gptk_win32[13] = (UINT_PTR)SetWindowLongPtrW;
+ 
++
+     if (MACDRV_CALL(init, &params)) return FALSE;
+ 
+     return TRUE;
+--- a/dlls/winemac.drv/unixlib.h
++++ b/dlls/winemac.drv/unixlib.h
+@@ -41,6 +41,8 @@
+     struct localized_string *strings;
+     UINT64 app_icon_callback;
+     UINT64 app_quit_request_callback;
++    /* GPTK 4 bridge: Windows callbacks, supplied by the PE driver. */
++    UINT64 gptk_win32[14];
+ };
+ 
+ /* macdrv_quit_result params */
+--- a/dlls/winemac.drv/Makefile.in
++++ b/dlls/winemac.drv/Makefile.in
+@@ -1,6 +1,6 @@
+ MODULE    = winemac.drv
+ UNIXLIB   = winemac.so
+-IMPORTS   = uuid rpcrt4 user32 gdi32 win32u
++IMPORTS   = advapi32 uuid rpcrt4 user32 gdi32 win32u
+ DELAYIMPORTS = ole32 shell32 imm32
+ UNIX_LIBS    = \
+ 	-lwin32u \

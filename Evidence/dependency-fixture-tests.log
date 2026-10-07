@@ -1,0 +1,17 @@
+PASS: bounded sample detects every supported family including v14 _1
+PASS: x86 requirement independent of x64
+PASS: missing prefix requests install
+PASS: read-only preflight / cancellation creates no metadata, cache or prefix
+PASS: native architecture-matched DLLs satisfy dependency
+PASS: installation persists with runtime/prefix association
+PASS: second preflight requires no reinstall
+PASS: another runtime-specific prefix independently missing
+PASS: metadata mismatch becomes repair
+PASS: Wine builtin is not confirmed Microsoft dependency
+PASS: wrong DLL architecture rejected
+PASS: lookalike source rejected
+PASS: failed install never gets installation date
+PASS: library requirements and successfulRuntime persist separately
+PASS: bounded RVA import read beyond sample
+TEST ARTIFACTS: /var/folders/30/y5648hkn6bbd91f_zt9q2n080000gn/T/CrossPlayDependencyTests-3FB9C362-8508-4D29-BA66-3860CA71388A
+ALL DEPENDENCY CHECKS PASSED

@@ -1,0 +1,3 @@
+STRIPPROG=llvm-strip /private/tmp/gptk4-wine-source/tools/install-sh -m 644  dlls/winemac.drv/x86_64-windows/winemac.drv /private/tmp/gptk4-runtime/lib/wine/x86_64-windows/winemac.drv
+tools/winebuild/winebuild --builtin /private/tmp/gptk4-runtime/lib/wine/x86_64-windows/winemac.drv
+STRIPPROG="strip" /private/tmp/gptk4-wine-source/tools/install-sh  dlls/winemac.drv/winemac.so /private/tmp/gptk4-runtime/lib/wine/x86_64-unix/winemac.so
