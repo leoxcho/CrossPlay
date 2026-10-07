@@ -57,3 +57,11 @@ Installers are downloaded only after native user approval, using HTTPS and an ex
 Installation uses a dedicated `ExecutionHost` carrying the game's exact immutable runtime and prefix. It reuses runtime validation, bottle initialization and the prefix launch lock. It never invokes system Wine or changes runtime selection. Exit success alone is insufficient: native DLL verification must pass before an installed record is saved or the original launch resumes. Downloads are not bundled in the source or app. Logs remain available in CrossPlay's Logs view and application-support Logs directory.
 
 Detection remains a heuristic: dynamically loaded libraries, plugins, uninspected child executables, app-local DLL resolution and precise minimum runtime versions may require manual selection. x86 components can be explicitly selected alongside x64; runtime support for running them is still required. Native DLL checks establish component presence/architecture, not complete loader compatibility or game playability. The automatic relaunch path retains the selected runtime, prefix, launch arguments and environment.
+
+## CrossPlay
+
+### My Games
+
+CrossPlay provides a unified library for Windows games running on macOS through supported Wine/GPTK runtimes.
+
+![CrossPlay My Games](Artwork/CrossPlay-My-Games.png)
