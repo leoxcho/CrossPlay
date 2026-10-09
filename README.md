@@ -1,5 +1,27 @@
 # CrossPlay
 
+## Windows PC Gaming on Apple Silicon
+
+CrossPlay is a macOS application designed to simplify running Windows PC games on Apple Silicon Macs. It provides a graphical interface for managing compatibility runtimes and turning existing Windows game installations into individual macOS app launchers.
+
+Built around configurable Wine, CrossOver, and Apple Game Porting Toolkit environments, CrossPlay brings game launching, runtime management, and compatibility configuration into one unified interface.
+
+### Key Features
+
+- **Individual Game Launchers:** Create separate macOS app launchers for Windows games stored on internal or external drives.
+- **Runtime Management:** Organize and manage installed compatibility environments and their configurations.
+- **Game Library Management:** Keep Windows game installations accessible through a centralized interface.
+- **Compatibility Configuration:** Configure game-specific environments to accommodate different runtime requirements.
+- **External Drive Support:** Organize games across multiple storage volumes.
+- **macOS Integration:** Bring Windows game installations into a workflow designed for the Mac desktop.
+
+CrossPlay combines existing compatibility technologies with a native macOS management experience.
+
+> **Compatibility Notice:** Compatibility varies by game, runtime version, and hardware configuration. CrossPlay does not guarantee that every Windows game will run.
+
+---
+
+
 Native ARM64 AppKit launcher with a separate Foundation execution host in `Sources/ExecutionHost.swift`. The host validates Windows PE headers, detects likely engine graphics dependencies, manages an isolated prefix, initializes Windows registry/filesystem state, selects the game working directory, launches without a shell, and captures stdout/stderr plus exit status. Arguments are a JSON array; environment overrides are a JSON object. Graphics backend detection is a heuristic, not proof of the active renderer.
 
 ## Runtime provenance
